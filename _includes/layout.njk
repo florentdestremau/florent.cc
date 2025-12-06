@@ -5,21 +5,37 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <link rel="stylesheet" href="/bundle.css">
     <meta name="description" content="{{ description }}">
+    <link rel="icon" href="/img/favicon.ico">
 </head>
 
 <body>
+<div class="background"></div>
+<div class="content">
     <header>
+        <div>
+            <a href="/">
+                <img src="/img/florent.jpg" width="80" height="80" alt="Florent Destremau">
+                <p>Florent Destremau</p>
+            </a>
+            <h1>CTO Freelance et Dev PHP</h1>
+            <p>
+                <strong>
+                    Hands-on CTO fullstack sur vos projets PHP et JS
+                </strong>
+            </p>
+        </div>
         <nav>
-            <a href="/">Accueil</a>
             <a href="https://florentdestremau.bearblog.dev/">Blog</a>
             <a href="https://www.linkedin.com/in/florent-destremau/">LinkedIn</a>
-            <a href="https://twitter.com/FloDestremau">Twitter / X</a>
+            <a href="https://x.com/FloDestremau">X.com</a>
             <a href="https://github.com/florentdestremau">Github</a>
+            <a href="/about">À propos</a>
         </nav>
     </header>
     {{ content | safe }}
+</div>
 </body>
 
 </html>
