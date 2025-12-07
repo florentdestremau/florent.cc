@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to translate a Symfony and React project.</title>
+    <link rel="stylesheet" href="/bundle.css">
+    <meta name="description" content="">
+    <link rel="icon" href="/img/favicon.ico">
+    <link
+            href="https://unpkg.com/prismjs@1.20.0/themes/prism.css"
+            rel="stylesheet"
+    />
+</head>
+
+<body>
+<div class="background"></div>
+<div class="content">
+    <header>
+        <div>
+            <a href="/">
+                <img src="/img/florent.jpg" width="80" height="80" alt="Florent Destremau">
+                <p>Florent Destremau</p>
+            </a>
+            <div class="lead">CTO Freelance et Dev PHP</div>
+            <p>
+                Hands-on CTO fullstack sur vos projets PHP et JS
+            </p>
+        </div>
+        <nav>
+            <a href="/">Accueil</a>
+            <a href="https://www.linkedin.com/in/florent-destremau/">LinkedIn</a>
+            <a href="https://x.com/FloDestremau">X.com</a>
+            <a href="https://github.com/florentdestremau">Github</a>
+            <a href="/about">À propos</a>
+        </nav>
+    </header>
+    <p>When starting a new web app, I tend to think that internationalization is not a first-version concern. However, as soon as your side project starts becoming a real world app, your user base grows, and when you don’t live in in an English-speaking country (such as France), you might want your application to be available in English.</p>
+<p>Although it’s often pretty straightforward to handle internationalization in Symfony or in React on their own, handling it in both at the same time appeared to be quite the challenge for us at <a href="https://windoo.fr">Windoo</a>.</p>
+<p>In this post I will talk about how we maintain a single translation file for both Symfony &amp; React. I will not address the user-side of handling locale setting as it is not the challenge here.</p>
+<h1>Translating in a Symfony project</h1>
+<p>You need to have the <a href="https://symfony.com/doc/current/components/translation.html">translation component</a> set up. You probably need only to require it and use it right away if you’re using Flex (and your probably should):</p>
+<pre class="language-shell"><code class="language-shell"><span class="token function">composer</span> require symfony/translation</code></pre>
+<p>If you are using twig for your templates (pages, emails…), you will need to have your translations in a file such as <code>messages.fr.yml</code> and <code>messages.en.yml</code> and use the following syntax in your templates:</p>
+<pre class="language-html"><code class="language-html">
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>{{ path('booking_list') }}<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>  
+    {{ 'common.see_all'|trans }}  
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>If you want to translate a message in a controller or in service, you need to inject the <code>TranslatorInterface</code> service:</p>
+<pre class="language-php"><code class="language-php"><span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">greet</span><span class="token punctuation">(</span><span class="token class-name type-declaration">TranslatorInterface</span> <span class="token variable">$translator</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token class-name return-type">Response</span>  
+<span class="token punctuation">{</span> 
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span><span class="token variable">$translator</span><span class="token operator">-></span><span class="token function">trans</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'common.greet'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+<span class="token punctuation">}</span></code></pre>
+<p>You end up with a big yaml file such as:</p>
+<pre class="language-yaml"><code class="language-yaml"><span class="token key atrule">common</span><span class="token punctuation">:</span>  
+   <span class="token key atrule">post</span><span class="token punctuation">:</span> Post   
+   <span class="token key atrule">greet</span><span class="token punctuation">:</span> Hello <span class="token tag">!</span>  
+   <span class="token key atrule">see_all</span><span class="token punctuation">:</span> See all  
+   <span class="token key atrule">hide</span><span class="token punctuation">:</span> Hide  
+   <span class="token key atrule">home</span><span class="token punctuation">:</span> Home  
+<span class="token key atrule">post</span><span class="token punctuation">:</span>  
+   <span class="token key atrule">title</span><span class="token punctuation">:</span> Post title</code></pre>
+<p>This way, you can use the Yaml keys in your translation. You can handle your local with Symfony, have two files, one in English, one in French, and there you go!</p>
+<blockquote>
+<p>Before some people comment I should be using <em>xliff</em> format instead, I can already address the matter: I find Yaml translations files a whole lot easier to maintain and visualize on a single-dev project. The <em>xliff</em> format is the official recommended by Symfony’s best practices, but the conversion is pretty easy if needed. More on that later in the article.</p>
+</blockquote>
+<h1>Translating in a React project</h1>
+<p>In react there a big standard lib called <a href="https://react.i18next.com/">react-i18next</a>. Once you set it up, you end up using it like this (there are <em>several</em> options).</p>
+<pre class="language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> useTranslation <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-i18next'</span><span class="token punctuation">;</span>  
+<span class="token keyword">const</span> <span class="token punctuation">{</span> t<span class="token punctuation">,</span> i18n <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useTranslation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token operator">&lt;</span>h1<span class="token operator">></span><span class="token punctuation">{</span><span class="token function">t</span><span class="token punctuation">(</span><span class="token string">'common.greet'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>h1<span class="token operator">></span></code></pre>
+<p>And your translations’ initialization would look like this:</p>
+<pre class="language-js"><code class="language-js"><span class="token keyword">import</span> i18n <span class="token keyword">from</span> <span class="token string">"i18next"</span><span class="token punctuation">;</span>  
+<span class="token keyword">import</span> <span class="token punctuation">{</span> initReactI18next <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"react-i18next"</span><span class="token punctuation">;</span>
+
+i18next  
+  <span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>initReactI18next<span class="token punctuation">)</span>  
+  <span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">{</span>  
+    <span class="token literal-property property">resources</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+      <span class="token literal-property property">en</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+        <span class="token literal-property property">common</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+          <span class="token literal-property property">greet</span><span class="token operator">:</span> <span class="token string">'hello!'</span>  
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>  
+        <span class="token literal-property property">post</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+          <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">'Post title'</span>  
+        <span class="token punctuation">}</span>  
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>  
+      <span class="token literal-property property">fr</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+        <span class="token literal-property property">common</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+          <span class="token literal-property property">greet</span><span class="token operator">:</span> <span class="token string">'Bonjour !'</span>  
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>  
+        <span class="token literal-property property">post</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+          <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">'Titre d\'article'</span>  
+        <span class="token punctuation">}</span>  
+      <span class="token punctuation">}</span>  
+    <span class="token punctuation">}</span>  
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>So you basically need to have a JSON file that can be parsed in a Javascript object.</p>
+<h1>Using React and Symfony translations together</h1>
+<p>Now this is all good when you work on a React SPA or a Symfony full-stack project. But when you start to share your translations across both projects, things become…messy.</p>
+<p>For starters, the Symfony and React-i18n format are not exactly compatible. React-i18n doesn’t read xliff format, neither yaml…actually it only wants a javascript object in JSON-style as an input file. So this way, that’s also one of the reason we didn’t use the <em>xliff</em> format for storing our translations.</p>
+<p>In order to use the same source file for both projects at <a href="https://windoo.fr">Windoo</a>, we decided to script an on-the-fly conversion of the Symfony format to be injected into the React project. To do this we used a yaml loader to convert the yaml files into a javascript object.</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// utils/i18n.js</span>
+<span class="token keyword">import</span> <span class="token operator">**</span>_i18n_<span class="token operator">**</span> <span class="token keyword">from</span> <span class="token string">'i18next'</span><span class="token punctuation">;</span>  
+<span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token operator">**</span>_initReactI18next_<span class="token operator">**</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-i18next'</span><span class="token punctuation">;</span>  
+<span class="token keyword">import</span> frYaml <span class="token keyword">from</span> <span class="token string">'js-yaml-loader!./translations/messages.fr.yml'</span><span class="token punctuation">;</span>  
+<span class="token keyword">import</span> enYaml <span class="token keyword">from</span> <span class="token string">'js-yaml-loader!./translations/messages.en.yml'</span><span class="token punctuation">;</span>
+
+i18n  
+  <span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span><span class="token operator">**</span>_initReactI18next_<span class="token operator">**</span><span class="token punctuation">)</span>  
+  <span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">{</span>  
+    <span class="token literal-property property">resources</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+      <span class="token literal-property property">fr</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+        <span class="token literal-property property">translation</span><span class="token operator">:</span> frYaml<span class="token punctuation">,</span>  
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>  
+      <span class="token literal-property property">en</span><span class="token operator">:</span> <span class="token punctuation">{</span>  
+        <span class="token literal-property property">translation</span><span class="token operator">:</span> enYaml<span class="token punctuation">,</span>  
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>  
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>  
+    <span class="token literal-property property">lng</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token operator">**</span>_window_<span class="token operator">**</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">**</span>_window_<span class="token operator">**</span><span class="token punctuation">.</span>locale<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token string">'fr'</span><span class="token punctuation">,</span>  
+    <span class="token literal-property property">fallbackLng</span><span class="token operator">:</span> <span class="token string">'fr'</span><span class="token punctuation">,</span>  
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+  
+<span class="token keyword">export</span> <span class="token keyword">default</span> i18n<span class="token punctuation">;</span></code></pre>
+<p>This way , we only need to update one type of file (and I prefer the Yaml format, it’s prettier to look at and easier to search), and both projects can use the shared translations. All good to go, right ?</p>
+<h1>Beware of pluralization and parameters !</h1>
+<p>We thought we had it all figured out because the previous works for simple strings such a button labels, titles… but then it became rapidly clear that the plural formulations were not mapped the same way, and led to broken translation in front. For the same reason too the template translations with variables did not work at all.</p>
+<p>Here is the react-i18n syntax for pluralization in the keys dictionary:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  
+  <span class="token property">"key"</span><span class="token operator">:</span> <span class="token string">"item"</span><span class="token punctuation">,</span>  
+  <span class="token property">"key_plural"</span><span class="token operator">:</span> <span class="token string">"items"</span><span class="token punctuation">,</span>  
+  <span class="token property">"keyWithCount"</span><span class="token operator">:</span> <span class="token string">" item"</span><span class="token punctuation">,</span>  
+  <span class="token property">"keyWithCount_plural"</span><span class="token operator">:</span> <span class="token string">" items"</span>  
+<span class="token punctuation">}</span></code></pre>
+<p>And here is the Symfony syntax for the same thing:</p>
+<pre class="language-yml"><code class="language-yml"><span class="token key atrule">key</span><span class="token punctuation">:</span> <span class="token string">"item|items"</span><span class="token punctuation">,</span>  
+<span class="token key atrule">keyWithCount</span><span class="token punctuation">:</span> <span class="token string">"%count% item|%count% items"</span></code></pre>
+<p>And I’m not even talking about the <a href="https://symfony.com/doc/4.4/translation/message_format.html#pluralization">full format for each language</a>. We only translate French and English (as of today at least), so we kept using the simple syntax.</p>
+<p>So the <em>number</em> of keys is not the same in React and this makes it way more difficult to transpose from Symfony-Yaml to i18n-JS. Ideally we would like to use the ICU Format for both, but I could find sufficient documentation for this. We might come back to it later in due time.</p>
+<h2>Parameter format</h2>
+<p>Before injecting the file, we updated all parameter syntax with a simple function handling all entries:</p>
+<pre class="language-js"><code class="language-js">
+<span class="token comment">// replace all %param% with {{param}}   </span>
+elem <span class="token operator">=</span> <span class="token operator">**</span>_String_<span class="token operator">**</span><span class="token punctuation">(</span>elem<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex"><span class="token regex-delimiter">/</span><span class="token regex-source language-regex">%(\[^%\]+(?=%))%</span><span class="token regex-delimiter">/</span><span class="token regex-flags">gi</span></span><span class="token punctuation">,</span> <span class="token string">'{{$1}}'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Then we had to split the plural keys in Symfony</p>
+<pre class="language-js"><code class="language-js"><span class="token keyword">const</span> newObject <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// the new translation dictionary</span>
+
+<span class="token comment">//while looping on the keys  </span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>elem<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  
+  <span class="token keyword">const</span> plural <span class="token operator">=</span> elem<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  
+  newObject<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> plural<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  
+  newObject<span class="token punctuation">[</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>key<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">_plural</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">]</span> <span class="token operator">=</span> plural<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  
+<span class="token punctuation">}</span></code></pre>
+<p>And this way, we made a full transposition of our translations on-the-fly from Symfony to React. Here a complete example in one gist:</p>
+<p>a full i18n.js service you could import in your project</p>
+<p>After that, you simply import your new <code>i18n.js</code> service into your React components and <em>voilà</em> !</p>
+<p>I will write a follow-up on how we improved this workflow with a translation service in the middle, using <a href="https://localise.biz/">Localize</a>.</p>
+
+</div>
+</body>
+
+</html>

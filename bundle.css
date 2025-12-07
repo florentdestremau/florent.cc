@@ -51,6 +51,11 @@ p {
     margin: 0 0 1em;
 }
 
+.lead {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
 ul, ol {
     margin: 0 0 1em;
     padding-left: 1.25em;
@@ -114,33 +119,9 @@ textarea {
     min-height: 6rem;
 }
 
-button {
-    cursor: pointer;
-}
-
-button:active {
-    transform: translateY(1px);
-}
-
 img, video {
     max-width: 100%;
     height: auto;
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 1em 0;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: .5rem;
-    text-align: left;
-}
-
-th {
-    background: #f9f9f9;
 }
 
 article {
@@ -168,4 +149,9 @@ article {
     @media screen and (max-width: 900px) {
         padding: 1rem;
     }
+}
+
+pre {
+    background: #fff;
+    padding: 1rem;
 }

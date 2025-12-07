@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utiliser Symfony Autocomplete pour créer des entités à la volée dans un formulaire</title>
+    <link rel="stylesheet" href="/bundle.css">
+    <meta name="description" content="">
+    <link rel="icon" href="/img/favicon.ico">
+    <link
+            href="https://unpkg.com/prismjs@1.20.0/themes/prism.css"
+            rel="stylesheet"
+    />
+</head>
+
+<body>
+<div class="background"></div>
+<div class="content">
+    <header>
+        <div>
+            <a href="/">
+                <img src="/img/florent.jpg" width="80" height="80" alt="Florent Destremau">
+                <p>Florent Destremau</p>
+            </a>
+            <div class="lead">CTO Freelance et Dev PHP</div>
+            <p>
+                Hands-on CTO fullstack sur vos projets PHP et JS
+            </p>
+        </div>
+        <nav>
+            <a href="/">Accueil</a>
+            <a href="https://www.linkedin.com/in/florent-destremau/">LinkedIn</a>
+            <a href="https://x.com/FloDestremau">X.com</a>
+            <a href="https://github.com/florentdestremau">Github</a>
+            <a href="/about">À propos</a>
+        </nav>
+    </header>
+    <h1>Utiliser Symfony Autocomplete pour créer des entités à la volée dans un formulaire</h1>
+<p>J'ai récemment eu besoin de créer un formulaire de création d'utilisateur, où je devais remplir des attributs. Ces attributs sont des entités à part entière et devaient pouvoir être créés à la volée lors de la saisie du formulaire.</p>
+<p>Étant déjà utilisateur du composant Aucomplete sur nos formulaires, qui utilise la librairie <a href="https://tom-select.js.org/">Tom Select</a>, je pensais qu'on pouvait tout naturellement utiliser la propriété <code>create</code> qui permet de saisir des nouvelles entrées au sein d'un <code>&lt;select&gt;</code> existant.</p>
+<p><img src="/img/symfony-autocomplete.png" alt="Capture d'écran de l'usage de Tom Select"></p>
+<p>Malheureusement, ça n'était pas nativement supporté. La solution que j'ai trouvé était donc de faire usage d'un cas d'application particulier de l'option <code>create</code>: on peut lui fournir une fonction qui prend un callback en argument, ce qui permet de...tout faire, en somme.</p>
+<pre class="language-js"><code class="language-js"><span class="token function-variable function">create</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">input<span class="token punctuation">,</span>callback</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+	<span class="token function">callback</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token literal-property property">value</span><span class="token operator">:</span>input<span class="token punctuation">,</span><span class="token literal-property property">text</span><span class="token operator">:</span>input<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Ainsi, ce que je voulais en somme, c'est fournir un callback de ce type:</p>
+<pre class="language-js"><code class="language-js"><span class="token function-variable function">create</span><span class="token operator">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">input<span class="token punctuation">,</span> callback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'/api/attributes'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">body</span><span class="token operator">:</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token literal-property property">name</span><span class="token operator">:</span> input<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">response</span> <span class="token operator">=></span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">data</span> <span class="token operator">=></span> <span class="token function">callback</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token literal-property property">value</span><span class="token operator">:</span> data<span class="token punctuation">.</span>id<span class="token punctuation">,</span> <span class="token literal-property property">text</span><span class="token operator">:</span> data<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Bon, à ce stade ça fonctionne en théorie, mais je n'aime pas trop l'idée de laisser une url en clair dans mon bout de JS, et puis je n'ai pas vraiment d'endroit clair où je peux activer cette fonction. L'option &quot;tom_select_options&quot; dans mon formulaire ne me permet en effet pas de passer une fonction javascript.</p>
+<pre class="language-php"><code class="language-php"><span class="token comment">// src/Form/UserType.php</span>
+
+<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">buildForm</span><span class="token punctuation">(</span><span class="token class-name type-declaration">FormBuilderInterface</span> <span class="token variable">$builder</span><span class="token punctuation">,</span> <span class="token keyword type-hint">array</span> <span class="token variable">$options</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword return-type">void</span>
+<span class="token punctuation">{</span>
+    <span class="token variable">$builder</span>
+        <span class="token operator">-></span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'name'</span><span class="token punctuation">)</span>
+        <span class="token operator">-></span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'email'</span><span class="token punctuation">)</span>
+        <span class="token operator">-></span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'attributes'</span><span class="token punctuation">,</span> <span class="token class-name static-context">EntityType</span><span class="token operator">::</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'multiple'</span>           <span class="token operator">=></span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'required'</span>           <span class="token operator">=></span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'autocomplete'</span>       <span class="token operator">=></span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'class'</span>              <span class="token operator">=></span> <span class="token class-name static-context">Attribute</span><span class="token operator">::</span><span class="token keyword">class</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'by_reference'</span>       <span class="token operator">=></span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'tom_select_options'</span> <span class="token operator">=></span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'create'</span> <span class="token operator">=></span> <span class="token constant boolean">true</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Ma solution est donc de <a href="https://symfony.com/bundles/ux-autocomplete/current/index.html#extending-tom-select">suivre la doc</a> et de créer un controller stimulus dédié.</p>
+<p>En première version, je vais continuer de hard-coder l'url:</p>
+<pre class="language-js"><code class="language-js"><span class="token comment">// assets/controllers/custom-autocomplete_controller.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>Controller<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@hotwired/stimulus'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">extends</span> Controller <span class="token punctuation">{</span>
+    <span class="token function">connect</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>element<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'autocomplete:pre-connect'</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>_onPreConnect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">disconnect</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>element<span class="token punctuation">.</span><span class="token function">removeEventListener</span><span class="token punctuation">(</span><span class="token string">'autocomplete:pre-connect'</span><span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">_onPreConnect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function-variable function">_onPreConnect</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        event<span class="token punctuation">.</span>detail<span class="token punctuation">.</span>options<span class="token punctuation">.</span><span class="token function-variable function">create</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">input<span class="token punctuation">,</span> callback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FormData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            data<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'attribute[name]'</span><span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token string">'/attribute/new?ajax=1'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+                <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">body</span><span class="token operator">:</span> data<span class="token punctuation">,</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">response</span> <span class="token operator">=></span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">data</span> <span class="token operator">=></span> <span class="token function">callback</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token literal-property property">value</span><span class="token operator">:</span> data<span class="token punctuation">.</span>id<span class="token punctuation">,</span> <span class="token literal-property property">text</span><span class="token operator">:</span> data<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<pre class="language-php"><code class="language-php"><span class="token variable">$builder</span>
+    <span class="token operator">-></span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'attributes'</span><span class="token punctuation">,</span> <span class="token class-name static-context">EntityType</span><span class="token operator">::</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'multiple'</span>     <span class="token operator">=></span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'required'</span>     <span class="token operator">=></span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'autocomplete'</span> <span class="token operator">=></span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'class'</span>        <span class="token operator">=></span> <span class="token class-name static-context">Attribute</span><span class="token operator">::</span><span class="token keyword">class</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'by_reference'</span> <span class="token operator">=></span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'attr'</span>         <span class="token operator">=></span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'data-controller'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'custom-autocomplete'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>À ce stade, j'ai ma route qui fait son travail, et j'ai bien une création d'attribut à la volée, puis je soumet mon formulaire. Dernière étape: mettre l'url en paramétrage pour garder le controller stimulus anonyme.</p>
+<pre class="language-php"><code class="language-php"><span class="token comment">// src/Form/UserType</span>
+
+<span class="token string single-quoted-string">'attr'</span> <span class="token operator">=></span> <span class="token punctuation">[</span>
+    <span class="token string single-quoted-string">'data-controller'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'custom-autocomplete'</span><span class="token punctuation">,</span>
+    <span class="token string single-quoted-string">'data-custom-autocomplete-url-value'</span> <span class="token operator">=></span> <span class="token string single-quoted-string">'/attribute/new'</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span><span class="token punctuation">,</span></code></pre>
+<pre class="language-js"><code class="language-js"><span class="token comment">// assets/controllers/custom-autocomplete_controller.js</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">extends</span> Controller <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> values <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token literal-property property">url</span><span class="token operator">:</span> String <span class="token punctuation">}</span>
+
+    <span class="token comment">// [...]</span>
+
+    <span class="token function-variable function">_onPreConnect</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> url <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>urlValue<span class="token punctuation">;</span>
+        event<span class="token punctuation">.</span>detail<span class="token punctuation">.</span>options<span class="token punctuation">.</span><span class="token function-variable function">create</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">input<span class="token punctuation">,</span> callback</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FormData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            data<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'name'</span><span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">fetch</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+                <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">body</span><span class="token operator">:</span> data<span class="token punctuation">,</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">response</span> <span class="token operator">=></span> response<span class="token punctuation">.</span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">data</span> <span class="token operator">=></span> <span class="token function">callback</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token literal-property property">value</span><span class="token operator">:</span> data<span class="token punctuation">.</span>id<span class="token punctuation">,</span> <span class="token literal-property property">text</span><span class="token operator">:</span> data<span class="token punctuation">.</span>name<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Vous pouvez également utiliser le service UrlGenerator pour optimiser. Le controller Symfony est, lui, très banal.</p>
+<pre class="language-php"><code class="language-php">
+<span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name">Route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'/new'</span><span class="token punctuation">,</span> <span class="token attribute-class-name class-name">name</span><span class="token punctuation">:</span> <span class="token string single-quoted-string">'app_attribute_new'</span><span class="token punctuation">,</span> <span class="token attribute-class-name class-name">methods</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'GET'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span></span><span class="token delimiter punctuation">]</span></span>
+<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">new</span><span class="token punctuation">(</span><span class="token class-name type-declaration">Request</span> <span class="token variable">$request</span><span class="token punctuation">,</span> <span class="token class-name type-declaration">EntityManagerInterface</span> <span class="token variable">$entityManager</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token class-name return-type">Response</span>
+<span class="token punctuation">{</span>
+    <span class="token variable">$attribute</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Attribute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$form</span> <span class="token operator">=</span> <span class="token variable">$this</span><span class="token operator">-></span><span class="token function">createForm</span><span class="token punctuation">(</span><span class="token class-name static-context">AttributeType</span><span class="token operator">::</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token variable">$attribute</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$form</span><span class="token operator">-></span><span class="token function">handleRequest</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$form</span><span class="token operator">-></span><span class="token function">isSubmitted</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$form</span><span class="token operator">-></span><span class="token function">isValid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token variable">$entityManager</span><span class="token operator">-></span><span class="token function">persist</span><span class="token punctuation">(</span><span class="token variable">$attribute</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$entityManager</span><span class="token operator">-></span><span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token variable">$this</span><span class="token operator">-></span><span class="token function">json</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'id'</span> <span class="token operator">=></span> <span class="token variable">$attribute</span><span class="token operator">-></span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'name'</span> <span class="token operator">=></span> <span class="token variable">$attribute</span><span class="token operator">-></span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// [...]</span>
+ <span class="token punctuation">}</span></code></pre>
+<p>Pour tester, j'ai fait un projet rapide qui regroupe toutes ces idées, avec les différentes étapes en commit, disponible ici:
+<a href="https://github.com/florentdestremau/creatable-autocomplete"></a></p>
+<p>Prochaine étape: faire une PR sur Symfony UX pour intégrer ça nativement ? 😉</p>
+
+</div>
+</body>
+
+</html>
