@@ -14,3 +14,13 @@ Passionné par **PHP**, **Symfony**, **React** et **Hotwire**, j’accompagne le
 Allier **vision produit**, **leadership technique** et **exécution hands-on** pour livrer des applications à fort impact utilisateur et organisationnel.
 
 </article>
+
+# Mes articles
+
+<article>
+
+{% for post in collections.posts reversed %}
+<em>{{ post.date | date: "%Y-%m-%d" }}:</em> <a href="{{ post.url }}">{{ post.data.title }}</a>
+{% endfor %}
+
+</article>
