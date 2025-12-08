@@ -20,7 +20,9 @@ Allier **vision produit**, **leadership technique** et **exécution hands-on** p
 <article>
 
 {% for post in collections.posts reversed %}
-<em>{{ post.date | date: "%Y-%m-%d" }}:</em> <a href="{{ post.url }}">{{ post.data.title }}</a>
+<em>{{ post.date | dateFr }}:</em>
+<br>
+<a href="{{ post.url }}">{{ post.data.title }}</a>
 {% endfor %}
 
 </article>

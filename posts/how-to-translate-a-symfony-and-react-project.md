@@ -2,6 +2,7 @@
 title: How to translate a Symfony and React project.
 date: 2022-02-24
 ---
+# How to translate a Symfony and React project.
 
 When starting a new web app, I tend to think that internationalization is not a first-version concern. However, as soon as your side project starts becoming a real world app, your user base grows, and when you don’t live in in an English-speaking country (such as France), you might want your application to be available in English.
 
