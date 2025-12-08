@@ -8,18 +8,8 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("img");
     eleventyConfig.addPlugin(syntaxHighlight);
     // French date filter: e.g., 12 février 2023
-    eleventyConfig.addFilter("dateFr", (value) => {
-        const date = value instanceof Date ? value : new Date(value);
-        try {
-            return new Intl.DateTimeFormat('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-            }).format(date);
-        } catch (e) {
-            return '' + value;
-        }
-    });
-    return {
-    };
+    eleventyConfig.addFilter("dateFr", date => new Intl.DateTimeFormat('fr-FR', {
+        year: "numeric", month: "long", day: "numeric",
+    }).format(date));
+    return {};
 };
