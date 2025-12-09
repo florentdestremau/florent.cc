@@ -140,7 +140,7 @@ Dans le fond, comme le rappelle régulièrement DHH : la majeure partie du temps
 
 Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données. Dès lors les cas d'usages sont mis en lumière dans les scenarii "complexes". En voici quelques exemples.
 
-### Formulaires mutli-entités
+### Formulaires multi-entités
 
 Si l'on prend l'exemple d'un processus d'inscription, on va souvent vouloir mélanger plusieurs éléments qui ne rentrent pas dans l'entité de départ. Par exemple à l'inscription à un saas B2B, on va régulièrement proposer d'inviter des collègues pour former l'équipe dès l'inscription, voici à quoi ça pourrait ressembler:
 
