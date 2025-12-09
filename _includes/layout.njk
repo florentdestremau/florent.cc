@@ -38,6 +38,41 @@
         </nav>
     </header>
     {{ content | safe }}
+
+    {% if tags and ('posts' in tags) and collections and collections.posts %}
+    {% set postList = collections.posts %}
+    {% set currentIndex = -1 %}
+    {% for p in postList %}
+        {% if p.url == page.url %}
+            {% set currentIndex = loop.index0 %}
+        {% endif %}
+    {% endfor %}
+    {% if currentIndex >= 0 %}
+        {% set prevPost = null %}
+        {% if currentIndex > 0 %}
+            {% set prevPost = postList[currentIndex - 1] %}
+        {% endif %}
+        {% set nextPost = null %}
+        {% if currentIndex + 1 < (postList | length) %}
+            {% set nextPost = postList[currentIndex + 1] %}
+        {% endif %}
+        <footer class="post-nav">
+            <hr>
+            <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    {% if prevPost %}
+                        <a href="{{ prevPost.url }}" rel="prev">← Article précédent<br><strong>{{ prevPost.data.title }}</strong></a>
+                    {% endif %}
+                </div>
+                <div style="margin-left:auto;text-align:right;">
+                    {% if nextPost %}
+                        <a href="{{ nextPost.url }}" rel="next">Article suivant →<br><strong>{{ nextPost.data.title }}</strong></a>
+                    {% endif %}
+                </div>
+            </div>
+        </footer>
+    {% endif %}
+    {% endif %}
 </div>
 </body>
 
