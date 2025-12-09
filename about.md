@@ -11,8 +11,17 @@ description: Je suis Florent Destremau, CTO Dev PHP/JS freelance.
 
 ## Expérience Professionnelle
 
+### Lead Dev Freelance -  [Spyrit](https://www.spyrit.net/) *(2024 - actuel)*
+
+*Refonte intégrale de l'intranet d'une association de scoutisme pour remplacer un legacy datant de 15 à 20ans.*
+
+Je mène l'équipe technique du projet (5 personnes), fais la jonction entre la tehcnique et le métier avec le chef de projet, suis force de proposition et garant de la cohérence architecturale.
+
+Stack: Symfony 7.4, PHP 8.4, Postgresql, Symfony UX pour la partie front-end.
+
+
 ### Co-fondateur & CTO – [Windoo](https://windoo.fr/) *(2015–2025)*
-<em>Plateforme SaaS leader en engagement collaborateur. J’ai co-construit une solution innovante qui mesure, analyse et améliore l’expérience des équipes en temps réel, adoptée par des entreprises exigeantes. Architecture technique robuste et approche produit centrée sur l’impact business.</em>
+_Plateforme SaaS leader en engagement collaborateur. J’ai co-construit une solution innovante qui mesure, analyse et améliore l’expérience des équipes en temps réel, adoptée par des entreprises exigeantes. Architecture technique robuste et approche produit centrée sur l’impact business._
 <details>
 <summary>En savoir plus</summary>
 
