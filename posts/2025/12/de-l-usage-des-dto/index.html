@@ -35,8 +35,10 @@
         </nav>
     </header>
     <h1 id="de-l-usage-des-dto-dans-les-formulaires">De l'usage des DTO dans les formulaires</h1>
-<p>Je trouve que le débat des DTO est souvent très biaisé : on l'érige comme évidence lorsqu'on on en débat, mais on ne parle que très rarement du contexte et du coût associé en maintenance. L'argumentaire principal est de se rapprocher du DDD pour ne pas manipuler en direct les entités de l'ORM.</p>
-<p>Prenons ce code simple généré par le <code>make:entity</code> pour  une entité basique :</p>
+<p>Je trouve que le débat des DTO est souvent très biaisé : on l'érige comme évidence lorsqu'on on en débat, mais on ne
+parle que très rarement du contexte et du coût associé en maintenance. L'argumentaire principal est de se rapprocher du
+DDD pour ne pas manipuler en direct les entités de l'ORM.</p>
+<p>Prenons ce code simple généré par le <code>make:entity</code> pour une entité basique :</p>
 <pre class="language-php"><code class="language-php"><span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name class-name-fully-qualified">ORM<span class="token punctuation">\</span>Entity</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><span class="token delimiter punctuation">]</span></span>
 <span class="token keyword">class</span> <span class="token class-name-definition class-name">Post</span>
 <span class="token punctuation">{</span>
@@ -94,14 +96,19 @@
         <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<p>et hop on se dit qu'on a un truc dé-cou-plé. Le hic ? On a désormais une classe qui ne sert que de passe-plat entre l'entité db et le user, qui a les règles de validation métier...et qu'il faut maintenir en plus ! On espère ainsi avoir un code plus &quot;robuste&quot; au changement, mais en pratique, si je renomme <code>Post::title</code>, je dois désormais changer</p>
+<p>et hop on se dit qu'on a un truc dé-cou-plé. Le hic ? On a désormais une classe qui ne sert que de passe-plat entre
+l'entité db et le user, qui a les règles de validation métier...et qu'il faut maintenir en plus ! On espère ainsi avoir
+un code plus &quot;robuste&quot; au changement, mais en pratique, si je renomme <code>Post::title</code>, je dois désormais changer</p>
 <ul>
 <li>mon entité</li>
 <li>mon dto</li>
 <li>ma fonction de transfert</li>
 <li>mon form type</li>
 </ul>
-<p>Pour les opérations de CRUD simples par entité - ce qui représente l'immense majorité des cas dans les applications que je rencontre - ça n'apporte à mon sens que très peu de valeur. Il a fallu tomber sur <a href="https://martinfowler.com/bliki/LocalDTO.html">un article de Martin Fowler</a> évoquant cette sur-complexité pour me résoudre à être plus dur sur le sujet.</p>
+<p>Pour les opérations de CRUD simples par entité - ce qui représente l'immense majorité des cas dans les applications que
+je rencontre - ça n'apporte à mon sens que très peu de valeur. Il a fallu tomber
+sur <a href="https://martinfowler.com/bliki/LocalDTO.html">un article de Martin Fowler</a> évoquant cette sur-complexité pour me
+résoudre à être plus dur sur le sujet.</p>
 <p>Comment alors protéger notre code sans dto ? En faisant des tests, pardi !</p>
 <pre class="language-php"><code class="language-php"><span class="token keyword">class</span> <span class="token class-name-definition class-name">PostControllerTest</span> <span class="token keyword">extends</span> <span class="token class-name">WebTestCase</span>
 <span class="token punctuation">{</span>
@@ -118,7 +125,10 @@
         <span class="token variable">$this</span><span class="token operator">-></span><span class="token function">assertResponseRedirects</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'/post/show/1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<p>Pourquoi c'est suffisant ? Parce que tout casse si jamais le champ <code>Post::title</code> est modifié: j'aurai non seulement une 500 sur le GET mais aussi sur le POST. Pas besoin d'un DTO pour ça. Et je n'ai désormais que 2 fichiers à créer et maintenir, mon entité et mon formulaire. Plus qu'à déplacer les contraintes de validation sur l'entité et on est bons. Bonus ? Dans des cas simples comme ça, on peut en fait largement mettre du typage strict.</p>
+<p>Pourquoi c'est suffisant ? Parce que tout casse si jamais le champ <code>Post::title</code> est modifié: j'aurai non seulement une
+500 sur le GET mais aussi sur le POST. Pas besoin d'un DTO pour ça. Et je n'ai désormais que 2 fichiers à créer et
+maintenir, mon entité et mon formulaire. Plus qu'à déplacer les contraintes de validation sur l'entité et on est bons.
+Bonus ? Dans des cas simples comme ça, on peut en fait largement mettre du typage strict.</p>
 <pre class="language-php"><code class="language-php"><span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name class-name-fully-qualified">ORM<span class="token punctuation">\</span>Entity</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span><span class="token delimiter punctuation">]</span></span>
 <span class="token keyword">class</span> <span class="token class-name-definition class-name">Post</span>
 <span class="token punctuation">{</span>
@@ -135,12 +145,22 @@
     <span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name class-name-fully-qualified">Assert<span class="token punctuation">\</span>NotBlank</span></span><span class="token delimiter punctuation">]</span></span>
     <span class="token keyword">private</span> <span class="token keyword type-declaration">string</span> <span class="token variable">$body</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-<p>Et pourtant, mentalement, cette deuxième façon de faire paraît moins &quot;rigoureuse&quot;, alors qu'en fait elle résulte en un couplage plus souple code / base de données et une couverture de test accrue. C'est aussi une question de mentalité : on ne voit pas d'inconvénient à passer 1h de plus sur son ticket pour écrire le Dto, le couplage, le typage, les bugs pendant le développement car on a oublié de mapper un champ, etc...mais on a régulièrement &quot;pas le temps&quot; de faire un test fonctionnel.</p>
-<p>Dans le fond, comme le rappelle régulièrement DHH : la majeure partie du temps <a href="https://x.com/dhh/status/1956632934615490574">nous sommes des &quot;CRUD Monkeys&quot;</a> et nous écrivons en base de données depuis un input utilisateur. Ne pas oublier que bien souvent, nous ne sommes que le passe-plat entre la db et l'utilisateur, autant l'assumer et réduire la surface du passe-plat.</p>
+<p>Et pourtant, mentalement, cette deuxième façon de faire paraît moins &quot;rigoureuse&quot;, alors qu'en fait elle résulte en un
+couplage plus souple code / base de données et une couverture de test accrue. C'est aussi une question de mentalité : on
+ne voit pas d'inconvénient à passer 1h de plus sur son ticket pour écrire le Dto, le couplage, le typage, les bugs
+pendant le développement car on a oublié de mapper un champ, etc...mais on a régulièrement &quot;pas le temps&quot; de faire un
+test fonctionnel.</p>
+<p>Dans le fond, comme le rappelle régulièrement DHH : la majeure partie du
+temps <a href="https://x.com/dhh/status/1956632934615490574">nous sommes des &quot;CRUD Monkeys&quot;</a> et nous écrivons en base de données
+depuis un input utilisateur. Ne pas oublier que bien souvent, nous ne sommes que le passe-plat entre la db et
+l'utilisateur, autant l'assumer et réduire la surface du passe-plat.</p>
 <h2 id="les-cas-d-usage-de-dto-pertinents">Les cas d'usage de Dto pertinents</h2>
-<p>Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données. Dès lors les cas d'usages sont mis en lumière dans les scenarii &quot;complexes&quot;. En voici quelques exemples.</p>
+<p>Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données. Dès lors les cas d'usages
+sont mis en lumière dans les scenarii &quot;complexes&quot;. En voici quelques exemples.</p>
 <h3 id="formulaires-multi-entites">Formulaires multi-entités</h3>
-<p>Si l'on prend l'exemple d'un processus d'inscription, on va souvent vouloir mélanger plusieurs éléments qui ne rentrent pas dans l'entité de départ. Par exemple à l'inscription à un saas B2B, on va régulièrement proposer d'inviter des collègues pour former l'équipe dès l'inscription, voici à quoi ça pourrait ressembler:</p>
+<p>Si l'on prend l'exemple d'un processus d'inscription, on va souvent vouloir mélanger plusieurs éléments qui ne rentrent
+pas dans l'entité de départ. Par exemple à l'inscription à un saas B2B, on va régulièrement proposer d'inviter des
+collègues pour former l'équipe dès l'inscription, voici à quoi ça pourrait ressembler:</p>
 <pre class="language-php"><code class="language-php"><span class="token keyword">class</span> <span class="token class-name-definition class-name">RegistrationDto</span>
 <span class="token punctuation">{</span>
     <span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name class-name-fully-qualified">Assert<span class="token punctuation">\</span>NotBlank</span></span><span class="token delimiter punctuation">]</span></span>
@@ -160,9 +180,17 @@
     <span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name class-name-fully-qualified">Assert<span class="token punctuation">\</span>All</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token attribute-class-name class-name">new</span> <span class="token attribute-class-name class-name class-name-fully-qualified">Assert<span class="token punctuation">\</span>NotBlank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token attribute-class-name class-name">new</span> <span class="token attribute-class-name class-name class-name-fully-qualified">Assert<span class="token punctuation">\</span>Email</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span></span><span class="token delimiter punctuation">]</span></span>
     <span class="token keyword">public</span> <span class="token keyword type-declaration">array</span> <span class="token variable">$colleagueEmails</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-<p>Là, on va mapper différemment avec le début qui irait dans <code>User</code> , un autre qui va créer l'organisation et enfin l'array d'emails qui serait utilisé pour créer des <code>UserInvite</code>. Ici on a besoin de présenter différents petits formulaires au même endroit, un Dto permet de fluidifier cela au niveau des classes et de dispatcher la logique par la suite.</p>
+<p>Là, on va mapper différemment avec le début qui irait dans <code>User</code> , un autre qui va créer l'organisation et enfin l'
+array d'emails qui serait utilisé pour créer des <code>UserInvite</code>. Ici on a besoin de présenter différents petits
+formulaires au même endroit, un Dto permet de fluidifier cela au niveau des classes et de dispatcher la logique par la
+suite.</p>
 <h3 id="vue-partielle-d-objets">Vue partielle d'objets</h3>
-<p>Quand on commence à avoir des entités très conséquentes en taille (nombre de champs et relations), il peut devenir coûteux de récupérer l'entité entière avec un <code>-&gt;findBy([...])</code> ou un <code>-&gt;createQueryBuilder()</code>, en raisons des requêtes n+1 ou simplement de la place en mémoire que cela nécessite. On peut alors imaginer une vue allégée qui permettrait de ne récupérer que le minimum vital ET d'avoir malgré tout un typage pour la manipulation controller et vue, par exemple en Twig, en passant par une requête sql plus bas niveau. Doctrine en fait de bons <a href="https://www.doctrine-project.org/projects/doctrine-orm/en/3.5/reference/native-sql.html#examples">exemples sur sa documentation</a>.</p>
+<p>Quand on commence à avoir des entités très conséquentes en taille (nombre de champs et relations), il peut devenir
+coûteux de récupérer l'entité entière avec un <code>-&gt;findBy([...])</code> ou un <code>-&gt;createQueryBuilder()</code>, en raisons des requêtes
+n+1 ou simplement de la place en mémoire que cela nécessite. On peut alors imaginer une vue allégée qui permettrait de
+ne récupérer que le minimum vital ET d'avoir malgré tout un typage pour la manipulation controller et vue, par exemple
+en Twig, en passant par une requête sql plus bas niveau. Doctrine en fait de
+bons <a href="https://www.doctrine-project.org/projects/doctrine-orm/en/3.5/reference/native-sql.html#examples">exemples sur sa documentation</a>.</p>
 <p>Pour notre cas ce serait par exemple pour récupérer les posts. On aurait le Dto suivant:</p>
 <pre class="language-php"><code class="language-php"><span class="token keyword">final</span> <span class="token keyword">readonly</span> <span class="token keyword">class</span> <span class="token class-name-definition class-name">PostDto</span>
 <span class="token punctuation">{</span>
@@ -206,9 +234,16 @@
         <span class="token operator">-></span><span class="token function">createNativeQuery</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'SELECT id, title, body FROM post'</span><span class="token punctuation">,</span> <span class="token variable">$rsm</span><span class="token punctuation">)</span>
         <span class="token operator">-></span><span class="token function">getResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-<p>Ici la charge mémoire est bien plus faible, et on peut facilement inclure ça dans une vue Twig ou dans une réponse API, avec un objet épuré et inoffensif.</p>
+<p>Ici la charge mémoire est bien plus faible, et on peut facilement inclure ça dans une vue Twig ou dans une réponse API,
+avec un objet épuré et inoffensif.</p>
 <h3 id="vue-aggregee-d-objets">Vue aggrégée d'objets</h3>
-<p>De la même manière qu'une vue partielle, on peut rassembler à la main un <code>Post</code> avec ses <code>Comment</code> et ses <code>Followers</code> par exemple pour gagner en performance et en sécurité sur les objets renvoyés par notre code.</p>
+<p>De la même manière qu'une vue partielle, on peut rassembler à la main un <code>Post</code> avec ses <code>Comment</code> et ses <code>Followers</code>
+par exemple pour gagner en performance et en sécurité sur les objets renvoyés par notre code.</p>
+<h2 id="dto-le-bazooka-pour-tuer-une-mouche">DTO: le bazooka pour tuer une mouche ?</h2>
+<p>Les DTO peuvent sauver la mise dans des cas complexes, mais pour un CRUD basique, c’est quand même souvent <em>overkill</em>.
+Avant d’ajouter une couche de mapping et de maintenance, posez-vous la question : est-ce que j’ai vraiment besoin de ce
+code additionnel, ou est-ce que je me complique la vie pour rien ? Après tout, chaque ligne de code en plus c'est une
+surface de maintenance supplémentaire.</p>
 
 </div>
 </body>
