@@ -17,7 +17,7 @@ Allier **vision produit**, **leadership technique** et **exécution hands-on** p
 
 # Mes articles
 
-<article>
+<article id="blog">
 
 {% for post in collections.posts reversed %}
 <em>{{ post.date | dateFr }}:</em>
