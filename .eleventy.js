@@ -1,5 +1,7 @@
 // filepath: /.eleventy.js
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
+const { IdAttributePlugin } = require("@11ty/eleventy");
+
 
 
 module.exports = function (eleventyConfig) {
@@ -11,5 +13,6 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addFilter("dateFr", date => new Intl.DateTimeFormat('fr-FR', {
         year: "numeric", month: "long", day: "numeric",
     }).format(date));
+    eleventyConfig.addPlugin(IdAttributePlugin);
     return {};
 };
