@@ -8,10 +8,7 @@
     <link rel="stylesheet" href="/bundle.css">
     <meta name="description" content="">
     <link rel="icon" href="/img/favicon.ico">
-    <link
-            href="https://unpkg.com/prismjs@1.20.0/themes/prism.css"
-            rel="stylesheet"
-    />
+    <link href="https://unpkg.com/prismjs@1.20.0/themes/prism.css" rel="stylesheet">
 </head>
 
 <body>
@@ -33,15 +30,15 @@
             </p>
         </div>
         <nav>
-            <a href="/#blog">Blog</a>
+            <a href="/#mes-articles">Blog</a>
             <a href="/about">À&nbsp;propos</a>
         </nav>
     </header>
-    <h1>How to translate a Symfony and React project.</h1>
+    <h1 id="how-to-translate-a-symfony-and-react-project">How to translate a Symfony and React project.</h1>
 <p>When starting a new web app, I tend to think that internationalization is not a first-version concern. However, as soon as your side project starts becoming a real world app, your user base grows, and when you don’t live in in an English-speaking country (such as France), you might want your application to be available in English.</p>
 <p>Although it’s often pretty straightforward to handle internationalization in Symfony or in React on their own, handling it in both at the same time appeared to be quite the challenge for us at <a href="https://windoo.fr">Windoo</a>.</p>
 <p>In this post I will talk about how we maintain a single translation file for both Symfony &amp; React. I will not address the user-side of handling locale setting as it is not the challenge here.</p>
-<h1>Translating in a Symfony project</h1>
+<h1 id="translating-in-a-symfony-project">Translating in a Symfony project</h1>
 <p>You need to have the <a href="https://symfony.com/doc/current/components/translation.html">translation component</a> set up. You probably need only to require it and use it right away if you’re using Flex (and your probably should):</p>
 <pre class="language-shell"><code class="language-shell"><span class="token function">composer</span> require symfony/translation</code></pre>
 <p>If you are using twig for your templates (pages, emails…), you will need to have your translations in a file such as <code>messages.fr.yml</code> and <code>messages.en.yml</code> and use the following syntax in your templates:</p>
@@ -68,7 +65,7 @@
 <blockquote>
 <p>Before some people comment I should be using <em>xliff</em> format instead, I can already address the matter: I find Yaml translations files a whole lot easier to maintain and visualize on a single-dev project. The <em>xliff</em> format is the official recommended by Symfony’s best practices, but the conversion is pretty easy if needed. More on that later in the article.</p>
 </blockquote>
-<h1>Translating in a React project</h1>
+<h1 id="translating-in-a-react-project">Translating in a React project</h1>
 <p>In react there a big standard lib called <a href="https://react.i18next.com/">react-i18next</a>. Once you set it up, you end up using it like this (there are <em>several</em> options).</p>
 <pre class="language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> useTranslation <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react-i18next'</span><span class="token punctuation">;</span>  
 <span class="token keyword">const</span> <span class="token punctuation">{</span> t<span class="token punctuation">,</span> i18n <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">useTranslation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token operator">&lt;</span>h1<span class="token operator">></span><span class="token punctuation">{</span><span class="token function">t</span><span class="token punctuation">(</span><span class="token string">'common.greet'</span><span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token operator">&lt;</span><span class="token operator">/</span>h1<span class="token operator">></span></code></pre>
@@ -99,7 +96,7 @@ i18next
     <span class="token punctuation">}</span>  
   <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
 <p>So you basically need to have a JSON file that can be parsed in a Javascript object.</p>
-<h1>Using React and Symfony translations together</h1>
+<h1 id="using-react-and-symfony-translations-together">Using React and Symfony translations together</h1>
 <p>Now this is all good when you work on a React SPA or a Symfony full-stack project. But when you start to share your translations across both projects, things become…messy.</p>
 <p>For starters, the Symfony and React-i18n format are not exactly compatible. React-i18n doesn’t read xliff format, neither yaml…actually it only wants a javascript object in JSON-style as an input file. So this way, that’s also one of the reason we didn’t use the <em>xliff</em> format for storing our translations.</p>
 <p>In order to use the same source file for both projects at <a href="https://windoo.fr">Windoo</a>, we decided to script an on-the-fly conversion of the Symfony format to be injected into the React project. To do this we used a yaml loader to convert the yaml files into a javascript object.</p>
@@ -126,7 +123,7 @@ i18n
   
 <span class="token keyword">export</span> <span class="token keyword">default</span> i18n<span class="token punctuation">;</span></code></pre>
 <p>This way , we only need to update one type of file (and I prefer the Yaml format, it’s prettier to look at and easier to search), and both projects can use the shared translations. All good to go, right ?</p>
-<h1>Beware of pluralization and parameters !</h1>
+<h1 id="beware-of-pluralization-and-parameters">Beware of pluralization and parameters !</h1>
 <p>We thought we had it all figured out because the previous works for simple strings such a button labels, titles… but then it became rapidly clear that the plural formulations were not mapped the same way, and led to broken translation in front. For the same reason too the template translations with variables did not work at all.</p>
 <p>Here is the react-i18n syntax for pluralization in the keys dictionary:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  
@@ -140,7 +137,7 @@ i18n
 <span class="token key atrule">keyWithCount</span><span class="token punctuation">:</span> <span class="token string">"%count% item|%count% items"</span></code></pre>
 <p>And I’m not even talking about the <a href="https://symfony.com/doc/4.4/translation/message_format.html#pluralization">full format for each language</a>. We only translate French and English (as of today at least), so we kept using the simple syntax.</p>
 <p>So the <em>number</em> of keys is not the same in React and this makes it way more difficult to transpose from Symfony-Yaml to i18n-JS. Ideally we would like to use the ICU Format for both, but I could find sufficient documentation for this. We might come back to it later in due time.</p>
-<h2>Parameter format</h2>
+<h2 id="parameter-format">Parameter format</h2>
 <p>Before injecting the file, we updated all parameter syntax with a simple function handling all entries:</p>
 <pre class="language-js"><code class="language-js">
 <span class="token comment">// replace all %param% with {{param}}   </span>

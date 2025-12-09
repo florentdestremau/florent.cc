@@ -8,10 +8,7 @@
     <link rel="stylesheet" href="/bundle.css">
     <meta name="description" content="">
     <link rel="icon" href="/img/favicon.ico">
-    <link
-            href="https://unpkg.com/prismjs@1.20.0/themes/prism.css"
-            rel="stylesheet"
-    />
+    <link href="https://unpkg.com/prismjs@1.20.0/themes/prism.css" rel="stylesheet">
 </head>
 
 <body>
@@ -33,11 +30,11 @@
             </p>
         </div>
         <nav>
-            <a href="/#blog">Blog</a>
+            <a href="/#mes-articles">Blog</a>
             <a href="/about">À&nbsp;propos</a>
         </nav>
     </header>
-    <h1>Utiliser Symfony Autocomplete pour créer des entités à la volée dans un formulaire</h1>
+    <h1 id="utiliser-symfony-autocomplete-pour-creer-des-entites-a-la-volee-dans-un-formulaire">Utiliser Symfony Autocomplete pour créer des entités à la volée dans un formulaire</h1>
 <p>J'ai récemment eu besoin de créer un formulaire de création d'utilisateur, où je devais remplir des attributs. Ces attributs sont des entités à part entière et devaient pouvoir être créés à la volée lors de la saisie du formulaire.</p>
 <p>Étant déjà utilisateur du composant Aucomplete sur nos formulaires, qui utilise la librairie <a href="https://tom-select.js.org/">Tom Select</a>, je pensais qu'on pouvait tout naturellement utiliser la propriété <code>create</code> qui permet de saisir des nouvelles entrées au sein d'un <code>&lt;select&gt;</code> existant.</p>
 <p><img src="/img/symfony-autocomplete.png" alt="Capture d'écran de l'usage de Tom Select"></p>
