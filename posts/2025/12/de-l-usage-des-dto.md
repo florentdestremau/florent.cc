@@ -153,8 +153,12 @@ l'utilisateur, autant l'assumer et réduire la surface du passe-plat.
 
 ## Les cas d'usage de Dto pertinents
 
-Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données. Dès lors les cas d'usages
-sont mis en lumière dans les scenarii "complexes". En voici quelques exemples.
+Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données. 
+
+_D'ailleurs le terme Dto est souvent détourné pour signifier un Value Object, dont il est plutôt question ici (je constate que les termes sont interchangeables dans les discussion)._ 
+
+Dès lors les cas d'usages sont mis en lumière dans les scenarii "complexes".
+En voici quelques exemples.
 
 ### Formulaires multi-entités
 
@@ -212,7 +216,7 @@ final readonly class PostDto
 }
 ```
 
-Et il serait hydraté par un ResultSetMapping
+Et il serait hydraté par un ResultSetMapping en faisant une pure requête SQL.
 
 ```php
 // src/Repository/PostRepository.php
@@ -250,7 +254,18 @@ public function findPostViewDto()
 ```
 
 Ici la charge mémoire est bien plus faible, et on peut facilement inclure ça dans une vue Twig ou dans une réponse API,
-avec un objet épuré et inoffensif.
+avec un objet épuré et inoffensif. Doctrine nous facilite la vie aussi avec le query builder pour l'instancier directement dans la requête:
+
+```php
+public function findPostViewDtoWithQueryBuilder()
+{
+    return $this
+        ->createQueryBuilder('post')
+        ->select(sprintf('new %s(post.id, post.title, post.body)', PostDto::class))
+        ->getQuery()
+        ->getResult();
+}
+```
 
 ### Vue aggrégée d'objets
 
@@ -262,4 +277,4 @@ par exemple pour gagner en performance et en sécurité sur les objets renvoyés
 Les DTO peuvent sauver la mise dans des cas complexes, mais pour un CRUD basique, c’est quand même souvent _overkill_.
 Avant d’ajouter une couche de mapping et de maintenance, posez-vous la question : est-ce que j’ai vraiment besoin de ce
 code additionnel, ou est-ce que je me complique la vie pour rien ? Après tout, chaque ligne de code en plus c'est une
-surface de maintenance supplémentaire.
+surface de maintenance et de bug supplémentaire.
