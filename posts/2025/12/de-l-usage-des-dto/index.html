@@ -155,8 +155,10 @@ temps <a href="https://x.com/dhh/status/1956632934615490574">nous sommes des &qu
 depuis un input utilisateur. Ne pas oublier que bien souvent, nous ne sommes que le passe-plat entre la db et
 l'utilisateur, autant l'assumer et réduire la surface du passe-plat.</p>
 <h2 id="les-cas-d-usage-de-dto-pertinents">Les cas d'usage de Dto pertinents</h2>
-<p>Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données. Dès lors les cas d'usages
-sont mis en lumière dans les scenarii &quot;complexes&quot;. En voici quelques exemples.</p>
+<p>Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données.</p>
+<p><em>D'ailleurs le terme Dto est souvent détourné pour signifier un Value Object, dont il est plutôt question ici (je constate que les termes sont interchangeables dans les discussion).</em></p>
+<p>Dès lors les cas d'usages sont mis en lumière dans les scenarii &quot;complexes&quot;.
+En voici quelques exemples.</p>
 <h3 id="formulaires-multi-entites">Formulaires multi-entités</h3>
 <p>Si l'on prend l'exemple d'un processus d'inscription, on va souvent vouloir mélanger plusieurs éléments qui ne rentrent
 pas dans l'entité de départ. Par exemple à l'inscription à un saas B2B, on va régulièrement proposer d'inviter des
@@ -201,7 +203,7 @@ bons <a href="https://www.doctrine-project.org/projects/doctrine-orm/en/3.5/refe
     <span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<p>Et il serait hydraté par un ResultSetMapping</p>
+<p>Et il serait hydraté par un ResultSetMapping en faisant une pure requête SQL.</p>
 <pre class="language-php"><code class="language-php"><span class="token comment">// src/Repository/PostRepository.php</span>
 <span class="token comment">/**
  * @return array&lt;PostDto>
@@ -235,7 +237,15 @@ bons <a href="https://www.doctrine-project.org/projects/doctrine-orm/en/3.5/refe
         <span class="token operator">-></span><span class="token function">getResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
 <p>Ici la charge mémoire est bien plus faible, et on peut facilement inclure ça dans une vue Twig ou dans une réponse API,
-avec un objet épuré et inoffensif.</p>
+avec un objet épuré et inoffensif. Doctrine nous facilite la vie aussi avec le query builder pour l'instancier directement dans la requête:</p>
+<pre class="language-php"><code class="language-php"><span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">findPostViewDtoWithQueryBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token variable">$this</span>
+        <span class="token operator">-></span><span class="token function">createQueryBuilder</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'post'</span><span class="token punctuation">)</span>
+        <span class="token operator">-></span><span class="token function">select</span><span class="token punctuation">(</span><span class="token function">sprintf</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'new %s(post.id, post.title, post.body)'</span><span class="token punctuation">,</span> <span class="token class-name static-context">PostDto</span><span class="token operator">::</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token operator">-></span><span class="token function">getQuery</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token operator">-></span><span class="token function">getResult</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
 <h3 id="vue-aggregee-d-objets">Vue aggrégée d'objets</h3>
 <p>De la même manière qu'une vue partielle, on peut rassembler à la main un <code>Post</code> avec ses <code>Comment</code> et ses <code>Followers</code>
 par exemple pour gagner en performance et en sécurité sur les objets renvoyés par notre code.</p>
@@ -243,7 +253,7 @@ par exemple pour gagner en performance et en sécurité sur les objets renvoyés
 <p>Les DTO peuvent sauver la mise dans des cas complexes, mais pour un CRUD basique, c’est quand même souvent <em>overkill</em>.
 Avant d’ajouter une couche de mapping et de maintenance, posez-vous la question : est-ce que j’ai vraiment besoin de ce
 code additionnel, ou est-ce que je me complique la vie pour rien ? Après tout, chaque ligne de code en plus c'est une
-surface de maintenance supplémentaire.</p>
+surface de maintenance et de bug supplémentaire.</p>
 
 
     
