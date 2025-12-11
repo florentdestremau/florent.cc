@@ -1,5 +1,6 @@
 ---
 title: De l'usage des DTO dans les formulaires
+date: 2025-12-09
 ---
 
 # De l'usage des DTO dans les formulaires
