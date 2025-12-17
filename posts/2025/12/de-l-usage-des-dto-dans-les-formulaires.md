@@ -83,8 +83,8 @@ class PostType extends AbstractType
 }
 ```
 
-et hop on se dit qu'on a un truc dé-cou-plé. Le hic ? On a désormais une classe qui ne sert que de passe-plat entre
-l'entité db et le user, qui a les règles de validation métier...et qu'il faut maintenir en plus ! On espère ainsi avoir
+et hop, on se dit qu'on a un truc **dé-cou-plé**. Le hic ? On a désormais une classe qui ne sert que de passe-plat entre
+l'entité db et le end-user, qui a les règles de validation métier...et qu'il faut maintenir en plus ! On espère ainsi avoir
 un code plus "robuste" au changement, mais en pratique, si je renomme `Post::title`, je dois désormais changer
 
 - mon entité
@@ -92,12 +92,9 @@ un code plus "robuste" au changement, mais en pratique, si je renomme `Post::tit
 - ma fonction de transfert
 - mon form type
 
-Pour les opérations de CRUD simples par entité - ce qui représente l'immense majorité des cas dans les applications que
-je rencontre - ça n'apporte à mon sens que très peu de valeur. Il a fallu tomber
-sur [un article de Martin Fowler](https://martinfowler.com/bliki/LocalDTO.html) évoquant cette sur-complexité pour me
-résoudre à être plus dur sur le sujet.
+Pour les opérations de CRUD simples par entité - ce qui représente l'immense majorité des cas dans les applications que je rencontre - ça n'apporte à mon sens que très peu de valeur. Il a fallu tomber sur [un article de Martin Fowler](https://martinfowler.com/bliki/LocalDTO.html) évoquant cette sur-complexité pour me résoudre à être plus dur sur le sujet.
 
-Comment alors protéger notre code sans dto ? En faisant des tests, pardi !
+Comment alors protéger notre code sans dto ? **En faisant des tests**, pardi !
 
 ```php
 class PostControllerTest extends WebTestCase
@@ -120,6 +117,7 @@ class PostControllerTest extends WebTestCase
 Pourquoi c'est suffisant ? Parce que tout casse si jamais le champ `Post::title` est modifié: j'aurai non seulement une
 500 sur le GET mais aussi sur le POST. Pas besoin d'un DTO pour ça. Et je n'ai désormais que 2 fichiers à créer et
 maintenir, mon entité et mon formulaire. Plus qu'à déplacer les contraintes de validation sur l'entité et on est bons.
+
 Bonus ? Dans des cas simples comme ça, on peut en fait largement mettre du typage strict.
 
 ```php
@@ -154,18 +152,17 @@ l'utilisateur, autant l'assumer et réduire la surface du passe-plat.
 
 ## Les cas d'usage de Dto pertinents
 
-Si l'on reprend la définition de fond des Dto, ce sont des objets de transfert de données. 
+Si l'on reprend la définition de fond des Dto, ce sont des objets de **transfert de données**. 
 
 _D'ailleurs le terme Dto est souvent détourné pour signifier un Value Object, dont il est plutôt question ici (je constate que les termes sont interchangeables dans les discussion)._ 
 
-Dès lors les cas d'usages sont mis en lumière dans les scenarii "complexes".
-En voici quelques exemples.
+Dès lors les cas d'usages sont mis en lumière dans les scenarii "complexes" où la donnée n'est pas évidente. En voici quelques exemples.
 
 ### Formulaires multi-entités
 
-Si l'on prend l'exemple d'un processus d'inscription, on va souvent vouloir mélanger plusieurs éléments qui ne rentrent
-pas dans l'entité de départ. Par exemple à l'inscription à un saas B2B, on va régulièrement proposer d'inviter des
-collègues pour former l'équipe dès l'inscription, voici à quoi ça pourrait ressembler:
+Lors d'un processus d'inscription, on va souvent vouloir mélanger plusieurs éléments qui ne rentrent
+pas dans l'entité de départ. Par exemple pour un saas B2B, on peut proposer d'inviter des
+collègues pour former l'équipe dès l'inscription, voici à quoi ça pourrait ressembler le DTO associé :
 
 ```php
 class RegistrationDto
@@ -189,10 +186,7 @@ class RegistrationDto
 }
 ```
 
-Là, on va mapper différemment avec le début qui irait dans `User` , un autre qui va créer l'organisation et enfin l'
-array d'emails qui serait utilisé pour créer des `UserInvite`. Ici on a besoin de présenter différents petits
-formulaires au même endroit, un Dto permet de fluidifier cela au niveau des classes et de dispatcher la logique par la
-suite.
+Là, on va mapper différemment avec le début qui irait dans `User` , un autre qui va créer la nouvelle `Organisation` et enfin l'array d'emails qui serait utilisé pour créer des `UserInvite`. Ici on a besoin de présenter différents petits formulaires au même endroit, un Dto permet de fluidifier cela au niveau des classes et de dispatcher la logique par la suite.
 
 ### Vue partielle d'objets
 
@@ -255,7 +249,7 @@ public function findPostViewDto()
 ```
 
 Ici la charge mémoire est bien plus faible, et on peut facilement inclure ça dans une vue Twig ou dans une réponse API,
-avec un objet épuré et inoffensif. Doctrine nous facilite la vie aussi avec le query builder pour l'instancier directement dans la requête:
+avec un objet épuré et inoffensif. Doctrine nous facilite la vie aussi avec le query builder pour l'instancier directement dans la requête avec un query builder :
 
 ```php
 public function findPostViewDtoWithQueryBuilder()
