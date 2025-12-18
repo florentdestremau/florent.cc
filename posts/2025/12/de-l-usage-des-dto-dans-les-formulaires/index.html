@@ -106,7 +106,7 @@ un code plus &quot;robuste&quot; au changement, mais en pratique, si je renomme 
 <li>mon form type</li>
 </ul>
 <p>Pour les opérations de CRUD simples par entité - ce qui représente l'immense majorité des cas dans les applications que je rencontre - ça n'apporte à mon sens que très peu de valeur. Il a fallu tomber sur <a href="https://martinfowler.com/bliki/LocalDTO.html">un article de Martin Fowler</a> évoquant cette sur-complexité pour me résoudre à être plus dur sur le sujet.</p>
-<p>Comment alors protéger notre code sans dto ? <strong>En faisant des tests</strong>, pardi !</p>
+<p>Comment alors protéger notre code sans dto ? <strong>En écrivant des tests</strong>, pardi !</p>
 <pre class="language-php"><code class="language-php"><span class="token keyword">class</span> <span class="token class-name-definition class-name">PostControllerTest</span> <span class="token keyword">extends</span> <span class="token class-name">WebTestCase</span>
 <span class="token punctuation">{</span>
 
@@ -122,7 +122,7 @@ un code plus &quot;robuste&quot; au changement, mais en pratique, si je renomme 
         <span class="token variable">$this</span><span class="token operator">-></span><span class="token function">assertResponseRedirects</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'/post/show/1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<p>Pourquoi c'est suffisant ? Parce que tout casse si jamais le champ <code>Post::title</code> est modifié: j'aurai non seulement une
+<p>Pourquoi est-ce suffisant ? Parce que tout casse si jamais le champ <code>Post::title</code> est modifié: j'aurai non seulement une
 500 sur le GET mais aussi sur le POST. Pas besoin d'un DTO pour ça. Et je n'ai désormais que 2 fichiers à créer et
 maintenir, mon entité et mon formulaire. Plus qu'à déplacer les contraintes de validation sur l'entité et on est bons.</p>
 <p>Bonus ? Dans des cas simples comme ça, on peut en fait largement mettre du typage strict.</p>
@@ -201,7 +201,7 @@ bons <a href="https://www.doctrine-project.org/projects/doctrine-orm/en/3.5/refe
 <span class="token comment">/**
  * @return array&lt;PostDto>
  */</span>
-<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">findPostViewDto</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">findPostViewDto</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword return-type">array</span>
 <span class="token punctuation">{</span>
     <span class="token variable">$rsm</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ResultSetMapping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token variable">$rsm</span><span class="token operator">-></span><span class="token function">addScalarResult</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'id'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -231,7 +231,11 @@ bons <a href="https://www.doctrine-project.org/projects/doctrine-orm/en/3.5/refe
 <span class="token punctuation">}</span></code></pre>
 <p>Ici la charge mémoire est bien plus faible, et on peut facilement inclure ça dans une vue Twig ou dans une réponse API,
 avec un objet épuré et inoffensif. Doctrine nous facilite la vie aussi avec le query builder pour l'instancier directement dans la requête avec un query builder :</p>
-<pre class="language-php"><code class="language-php"><span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">findPostViewDtoWithQueryBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<pre class="language-php"><code class="language-php"><span class="token comment">// src/Repository/PostRepository.php</span>
+<span class="token comment">/**
+ * @return array&lt;PostDto>
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">findPostViewDtoWithQueryBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword return-type">array</span>
 <span class="token punctuation">{</span>
     <span class="token keyword">return</span> <span class="token variable">$this</span>
         <span class="token operator">-></span><span class="token function">createQueryBuilder</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'post'</span><span class="token punctuation">)</span>
@@ -244,9 +248,9 @@ avec un objet épuré et inoffensif. Doctrine nous facilite la vie aussi avec le
 par exemple pour gagner en performance et en sécurité sur les objets renvoyés par notre code.</p>
 <h2 id="dto-le-bazooka-pour-tuer-une-mouche">DTO: le bazooka pour tuer une mouche ?</h2>
 <p>Les DTO peuvent sauver la mise dans des cas complexes, mais pour un CRUD basique, c’est quand même souvent <em>overkill</em>.
-Avant d’ajouter une couche de mapping et de maintenance, posez-vous la question : est-ce que j’ai vraiment besoin de ce
+Avant d’ajouter une couche de mapping et de maintenance, posez-vous la question : est-ce que j’ai vraiment besoin de ce
 code additionnel, ou est-ce que je me complique la vie pour rien ? Après tout, chaque ligne de code en plus c'est une
-surface de maintenance et de bug supplémentaire.</p>
+surface de maintenance et de bug supplémentaire, et surtout : <strong>écrivez des tests</strong> !</p>
 
 
     
