@@ -13,52 +13,71 @@ description: Je suis Florent Destremau, CTO Dev PHP/JS freelance.
 
 ### Lead Dev Freelance -  [Spyrit](https://www.spyrit.net/) *(2024 - actuel)*
 
-*Refonte intégrale de l'intranet d'une association de scoutisme pour remplacer un legacy datant de 15 à 20ans.*
+Je participe à la refonte complète de l'ERP des Scouts Unitaires de France – Céphée.
 
-Je mène l'équipe technique du projet (5 personnes), fais la jonction entre la tehcnique et le métier avec le chef de projet, suis force de proposition et garant de la cohérence architecturale.
+**Céphée** est le nouvel ERP des Scouts Unitaires de France. Il permet aux scouts de s'inscrire pour l'année, aux chefs
+d'organiser les activités et les camps d'été, de suivre les parcours de formation, et aux équipes salariées de
+superviser le fonctionnement global de l'association dans le respect des normes en vigueur.
 
-Stack: Symfony 7.4, PHP 8.4, Postgresql, Symfony UX pour la partie front-end.
+Ce projet a été l'occasion d'une **refonte en profondeur du modèle de données**, notamment sur la gestion des droits et
+des rôles.
 
+**Stack Technique** : Symfony 7.4, PHP 8.4, PostgreSQL, Twig & Stimulus JS
+
+**Rôle – Responsable technique d'une équipe de 5 personnes** :
+
+- Je contribue directement au développement
+- Je supervise la production
+- Je pilote les choix techniques et architecturaux
+- Je suis force de proposition et garant de la cohérence architecturale
+
+---
 
 ### Co-fondateur & CTO – [Windoo](https://windoo.fr/) *(2015–2025)*
-_Plateforme SaaS leader en engagement collaborateur. J’ai co-construit une solution innovante qui mesure, analyse et améliore l’expérience des équipes en temps réel, adoptée par des entreprises exigeantes. Architecture technique robuste et approche produit centrée sur l’impact business._
-<details>
-<summary>En savoir plus</summary>
 
-- **Impact Business** : Conception et déploiement de **Windoo Connect**, une solution SaaS qui **transforme les données d’engagement en leviers d’action concrets**, réduisant le turnover et boostant la productivité des équipes.
-- **Leadership Technique** : Direction d’une équipe de 3 développeurs fullstack avec une **approche hands-on** : développement, relecture de code rigoureuse, et mentorat pour garantir un code **performant, scalable et maintenable**.
-- **Stack Technique** : Architecture moderne basée sur **Symfony 7 (PHP)**, **React JS**, **Hotwire (JS)** et **PostgreSQL**, optimisée pour la rapidité et l’analytique avancée.
-- **Résultats Clés** : Livraison d’une plateforme utilisée quotidiennement par des centaines d’utilisateurs, avec un **taux de satisfaction client supérieur à 90%**.
-</details>
+J'ai co-fondé Windoo avec mon associé Arnaud pour construire une solution tout-en-un d'engagement collaborateur. Windoo propose une solution SaaS qui mesure, analyse et améliore l'expérience des équipes en temps réel, adoptée par des entreprises exigeantes. La société propose également de la formation en entreprise pour les managers.
+
+**Stack Technique** : Symfony 7.4, PHP 8.4, PostgreSQL, Twig & Stimulus JS
+
+**Rôle – directeur technique et produit fondateur** :
+
+- J'ai dirigé un **équipe technique de 3 à 5 personnes** au cours du temps, en formant des juniors et en maintenant une exigeance de qualité.
+- J'ai piloté les **choix techniques et architecturaux** du projet tout du long, pour une application touchant plusieurs centaines de milliers de salariés.
+- J'ai géré l'**hébergement** intégral des différents sites (landing, application, staging, demo, preprod).
+- J'ai participé à la **gestion générale de l'enteprise** (comptabilité, recrutement, cohésion, animation).
+- J'ai porté l'entreprise de 0€ à **plusieurs M€ de chiffre d’affaires**, à travers **plusieurs levées de fonds**.
+- L'entreprise est à l'**équilibre financier**.
+
+--- 
 
 ### Conférencier [Symfony](https://symfony.com/)
-<em>Intervenant reconnu dans l’écosystème Symfony sur les thématiques **Symfony UX et front-end moderne**. Conférences en France et à l’international pour partager des bonnes pratiques et retours d’expérience.</em>
-<details>
-<summary>En savoir plus</summary>
 
-- **SymfonyCon Paris 2022** : Conférence en anglais sur l’intégration de **Symfony UX** pour des interfaces dynamiques.
-- **Meetup AFUP/AFSY Paris 2022** : Présentation des bonnes pratiques pour combiner **Symfony et Hotwire**.
-- **SymfonyLive Paris 2023** : Retour d’expérience sur l’optimisation des workflows front-end avec **Symfony UX**.
-</details>
+Je suis intervenant reconnu dans l'écosystème Symfony sur les thématiques **Symfony UX et front-end moderne**. Je
+donne des conférences en France et à l'international pour partager des bonnes pratiques et retours d'expérience.
+
+- **SymfonyCon Paris 2022** : J'ai donné une conférence en anglais sur l'intégration de Symfony UX pour des
+  interfaces dynamiques.
+- **Meetup AFUP/AFSY Paris 2022** : J'ai présenté les bonnes pratiques pour combiner Symfony et Hotwire.
+- **SymfonyLive Paris 2023** : J'ai partagé mon retour d'expérience sur l'optimisation des workflows front-end avec Symfony UX.
+
+---
 
 ### Développeur Full Stack – [Theodo - M33](https://www.theodo.fr/) *(2014–2016)*
-<em>Développement d’applications web en méthodologie **Scrum** et **Lean**. Contribution complète sur des projets back-end et front-end pour des clients entreprises.</em>
-<details>
-<summary>En savoir plus</summary>
 
-- Développement complet (back-end et front-end) pour des clients entreprises.
+J'ai développé des applications web en méthodologie **Scrum** et **Lean**. J'ai contribué de manière complète sur
+des projets back-end et front-end pour des clients entreprises.
+
+- J'ai réalisé un développement complet (back-end et front-end) pour des clients entreprises.
 - **Stack Technique** : Symfony, Angular JS, jQuery, React.
-</details>
+
+---
 
 ### Développeur Full Stack Freelance *(2013–2016)*
-<em>Missions variées dans le développement web. Création d’applications **Symfony**, de sites **WordPress** et **Joomla**, avec une approche sur mesure pour chaque client.</em>
-<details>
-<summary>En savoir plus</summary>
 
-- Création d’applications **Symfony**, de sites **WordPress** et **Joomla**.
-- Adaptation aux besoins clients et livraison de solutions sur mesure.
-</details>
+J'ai réalisé des missions variées dans le développement web. J'ai créé des applications **Symfony**, des sites **WordPress** et **Joomla**, avec une approche sur mesure pour chaque client, notamment [BDL Capital Management](https://www.bdlcm.com/).
 
+- J'ai créé des applications **Symfony**, des sites **WordPress** et **Joomla**.
+- Je me suis adapté aux besoins clients et j'ai livré des solutions sur mesure.
 
 </article>
 
