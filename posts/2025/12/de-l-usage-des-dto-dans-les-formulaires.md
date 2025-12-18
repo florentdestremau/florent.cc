@@ -94,7 +94,7 @@ un code plus "robuste" au changement, mais en pratique, si je renomme `Post::tit
 
 Pour les opérations de CRUD simples par entité - ce qui représente l'immense majorité des cas dans les applications que je rencontre - ça n'apporte à mon sens que très peu de valeur. Il a fallu tomber sur [un article de Martin Fowler](https://martinfowler.com/bliki/LocalDTO.html) évoquant cette sur-complexité pour me résoudre à être plus dur sur le sujet.
 
-Comment alors protéger notre code sans dto ? **En faisant des tests**, pardi !
+Comment alors protéger notre code sans dto ? **En écrivant des tests**, pardi !
 
 ```php
 class PostControllerTest extends WebTestCase
@@ -114,7 +114,7 @@ class PostControllerTest extends WebTestCase
 }
 ```
 
-Pourquoi c'est suffisant ? Parce que tout casse si jamais le champ `Post::title` est modifié: j'aurai non seulement une
+Pourquoi est-ce suffisant ? Parce que tout casse si jamais le champ `Post::title` est modifié: j'aurai non seulement une
 500 sur le GET mais aussi sur le POST. Pas besoin d'un DTO pour ça. Et je n'ai désormais que 2 fichiers à créer et
 maintenir, mon entité et mon formulaire. Plus qu'à déplacer les contraintes de validation sur l'entité et on est bons.
 
@@ -218,7 +218,7 @@ Et il serait hydraté par un ResultSetMapping en faisant une pure requête SQL.
 /**
  * @return array<PostDto>
  */
-public function findPostViewDto()
+public function findPostViewDto(): array
 {
     $rsm = new ResultSetMapping();
     $rsm->addScalarResult('id', 'id');
@@ -252,7 +252,11 @@ Ici la charge mémoire est bien plus faible, et on peut facilement inclure ça d
 avec un objet épuré et inoffensif. Doctrine nous facilite la vie aussi avec le query builder pour l'instancier directement dans la requête avec un query builder :
 
 ```php
-public function findPostViewDtoWithQueryBuilder()
+// src/Repository/PostRepository.php
+/**
+ * @return array<PostDto>
+ */
+public function findPostViewDtoWithQueryBuilder(): array
 {
     return $this
         ->createQueryBuilder('post')
@@ -270,6 +274,6 @@ par exemple pour gagner en performance et en sécurité sur les objets renvoyés
 ## DTO: le bazooka pour tuer une mouche ?
 
 Les DTO peuvent sauver la mise dans des cas complexes, mais pour un CRUD basique, c’est quand même souvent _overkill_.
-Avant d’ajouter une couche de mapping et de maintenance, posez-vous la question : est-ce que j’ai vraiment besoin de ce
+Avant d’ajouter une couche de mapping et de maintenance, posez-vous la question : est-ce que j’ai vraiment besoin de ce
 code additionnel, ou est-ce que je me complique la vie pour rien ? Après tout, chaque ligne de code en plus c'est une
-surface de maintenance et de bug supplémentaire.
+surface de maintenance et de bug supplémentaire, et surtout : **écrivez des tests** !
