@@ -15,6 +15,13 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addCollection("posts", function(collectionApi) {
         return collectionApi.getFilteredByTag("posts").filter(post => !post.data.draft);
     });
+
+    // Collection for draft posts only (local development only)
+    eleventyConfig.addCollection("drafts", function(collectionApi) {
+        const isDev = process.env.ELEVENTY_ENV !== 'production';
+        if (!isDev) return [];
+        return collectionApi.getFilteredByTag("posts").filter(post => post.data.draft);
+    });
     // French date filter: e.g., 12 février 2023
     eleventyConfig.addFilter("dateFr", date => new Intl.DateTimeFormat('fr-FR', {
         year: "numeric", month: "long", day: "numeric",

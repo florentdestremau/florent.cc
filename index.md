@@ -26,3 +26,17 @@ Allier **vision produit**, **leadership technique** et **exécution hands-on** p
 {% endfor %}
 
 </article>
+
+{% if collections.drafts.length > 0 %}
+# Brouillons (local uniquement)
+
+<article>
+
+{% for post in collections.drafts reversed %}
+<em>{{ post.date | dateFr }}:</em>
+<br>
+<a href="{{ post.url }}">{{ post.data.title }}</a> 🚧
+{% endfor %}
+
+</article>
+{% endif %}
