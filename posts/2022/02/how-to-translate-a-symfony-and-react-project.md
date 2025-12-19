@@ -1,6 +1,7 @@
 ---
 title: How to translate a Symfony and React project.
 date: 2022-02-24
+description: How to maintain a single translation file for both Symfony and React using yaml-loader and i18next, with handling of pluralization and parameters.
 ---
 # How to translate a Symfony and React project.
 
