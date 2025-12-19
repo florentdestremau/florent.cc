@@ -10,6 +10,11 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("img");
     eleventyConfig.addPassthroughCopy("robots.txt");
     eleventyConfig.addPlugin(syntaxHighlight);
+
+    // Filter out draft posts from collections
+    eleventyConfig.addCollection("posts", function(collectionApi) {
+        return collectionApi.getFilteredByTag("posts").filter(post => !post.data.draft);
+    });
     // French date filter: e.g., 12 février 2023
     eleventyConfig.addFilter("dateFr", date => new Intl.DateTimeFormat('fr-FR', {
         year: "numeric", month: "long", day: "numeric",

@@ -1,6 +1,7 @@
 ---
 title: Manager, tu as 2 semaines pour voir un changement
-date: 2025-12-09
+date: 2025-12-23
+draft: true
 ---
 
 # Manager, tu as 2 semaines pour voir un changement
