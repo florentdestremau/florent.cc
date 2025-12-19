@@ -13,6 +13,13 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addFilter("dateFr", date => new Intl.DateTimeFormat('fr-FR', {
         year: "numeric", month: "long", day: "numeric",
     }).format(date));
+
+    // ISO date filter for SEO meta tags
+    eleventyConfig.addFilter("dateISO", date => {
+        if (!date) return '';
+        return new Date(date).toISOString();
+    });
+
     eleventyConfig.addPlugin(IdAttributePlugin);
     return {};
 };
