@@ -8,6 +8,7 @@ module.exports = function (eleventyConfig) {
     // Passthrough copy for CSS files
     eleventyConfig.addPassthroughCopy("bundle.css");
     eleventyConfig.addPassthroughCopy("img");
+    eleventyConfig.addPassthroughCopy("robots.txt");
     eleventyConfig.addPlugin(syntaxHighlight);
     // French date filter: e.g., 12 février 2023
     eleventyConfig.addFilter("dateFr", date => new Intl.DateTimeFormat('fr-FR', {
