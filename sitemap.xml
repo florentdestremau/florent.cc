@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://florent.cc/</loc>
+        <lastmod>2025-12-19T08:53:28.744Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://florent.cc/about/</loc>
+        <lastmod>2025-12-19T08:53:28.744Z</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://florent.cc/posts/2022/02/how-to-translate-a-symfony-and-react-project/</loc>
+        <lastmod>2022-02-24T00:00:00.000Z</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://florent.cc/posts/2023/10/symfony-autocomplete/</loc>
+        <lastmod>2023-10-23T00:00:00.000Z</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://florent.cc/posts/2025/12/de-l-usage-des-dto-dans-les-formulaires/</loc>
+        <lastmod>2025-12-09T00:00:00.000Z</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+</urlset>
