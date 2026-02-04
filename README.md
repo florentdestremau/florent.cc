@@ -20,8 +20,10 @@ npm run build
 - Le positionnement bizarre des LiveComponents (sérialization)
 - Le no build a de l'attrait
 - Faut-il encore traduire son site ?
-- Toujours avoir un /up ou /healthcheck
 - Recrutement des juniors
 - Trick: turbo-frame, lazy-loading, turbo-stream pour vos dropdown complexes
 - pg_textsearch ?
 - Symfony et le cache...
+
+## DOING
+- Toujours avoir un /up ou /healthcheck

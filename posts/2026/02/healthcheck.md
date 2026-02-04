@@ -7,7 +7,7 @@ draft: true
 
 # L'intérêt d'un endpoint de healthcheck
 
-Une nouvelle habitude bonne à prendre sur vos projets est d'avoir un controller et/ou une commande de healthcheck.
+Une nouvelle habitude bonne à prendre sur vos projets est d'avoir un controller et/ou une commande de healthcheck. C'est léger, sans dépendance et rapide à mettre en place.
 
 ## En commande
 
@@ -70,7 +70,7 @@ On peut ajouter ici quelques autres endpoints comme l'accès au cache si on en a
 
 ### Premier usage: sécuriser le déploiement blue/green
 
-Si vous utilisez un déploiement roulant comme https://deployer.org/ vous pouvez faire un pre-check avant de basculer:
+Si vous utilisez un déploiement roulant comme https://deployer.org/ vous pouvez faire un pre-check avant de basculer, et vous éviter quelques pages blanches à l'occasion.
 
 ```php
 // deploy.php
@@ -93,13 +93,14 @@ En version très DIY (et non exaustive, vous pouvez ping avec un crontab votre p
 
 ## En controller
 
+Côté HTTP on peut reproduire la même chose mais sans la validation du schéma pour ne pas trop impacter la perf.
+
 ```php
 <?php
 
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaValidator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use function sprintf;
@@ -111,16 +112,6 @@ final class HealthCheckController
     {
         $time = microtime(true);
         $now = $entityManager->getConnection()->executeQuery('select now()')->fetchOne();
-
-        $validator = new SchemaValidator($entityManager);
-
-        // Validate ORM metadata (mapping issues)
-        $mappingErrors = $validator->validateMapping();
-
-        if (!empty($mappingErrors)) {
-            return new Response('KO', Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
         $responseTime = (int) ((microtime(true) - $time) * 1000);
 
         return new Response(sprintf('Ok @ %sUTC in %dms', $now, $responseTime));
@@ -129,3 +120,11 @@ final class HealthCheckController
 ```
 
 Même principe, simple et efficace. Ajoutez-y un filtrage IP si besoin.
+
+Quelques librairies proposent ce type de services, comme  par exemple, si on souhaite une version plus complète.
+
+## Pour conclure
+
+Bien sûr, il existe des solutions plus robustes dans l'écosystème comme le [LiipMonitorBundle](https://github.com/liip/LiipMonitorBundle) ou des healthchecks natifs via le composant `Webhook` de Symfony, mais cette approche "maison" a le mérite d'être instantanée à mettre en place et sans aucune dépendance.
+
+C'est le genre de petit script qui transforme une mise en prod stressante en une simple formalité validée automatiquement. C'est un premier pas essentiel vers une culture DevOps saine : l'application est capable de s'auto-diagnostiquer, ne serait-ce que sommairement. Alors, pourquoi s'en priver ?
