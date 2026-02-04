@@ -93,7 +93,7 @@
         </nav>
     </header>
     <h1 id="l-interet-d-un-endpoint-de-healthcheck">L'intérêt d'un endpoint de healthcheck</h1>
-<p>Une nouvelle habitude bonne à prendre sur vos projets est d'avoir un controller et/ou une commande de healthcheck.</p>
+<p>Une nouvelle habitude bonne à prendre sur vos projets est d'avoir un controller et/ou une commande de healthcheck. C'est léger, sans dépendance et rapide à mettre en place.</p>
 <h2 id="en-commande">En commande</h2>
 <pre class="language-php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
 
@@ -147,7 +147,7 @@
                                                                                             </code></pre>
 <p>On peut ajouter ici quelques autres endpoints comme l'accès au cache si on en a. Ensuite les applications sont nombreuses, en voici deux simples</p>
 <h3 id="premier-usage-securiser-le-deploiement-blue-green">Premier usage: sécuriser le déploiement blue/green</h3>
-<p>Si vous utilisez un déploiement roulant comme https://deployer.org/ vous pouvez faire un pre-check avant de basculer:</p>
+<p>Si vous utilisez un déploiement roulant comme https://deployer.org/ vous pouvez faire un pre-check avant de basculer, et vous éviter quelques pages blanches à l'occasion.</p>
 <pre class="language-php"><code class="language-php"><span class="token comment">// deploy.php</span>
 
 <span class="token function">task</span><span class="token punctuation">(</span>
@@ -160,12 +160,12 @@
 <pre class="language-shell"><code class="language-shell"><span class="token comment"># crontab</span>
 * * * * * bin/console app:health-check <span class="token operator">&amp;&amp;</span> send_uptime_signal</code></pre>
 <h2 id="en-controller">En controller</h2>
+<p>Côté HTTP on peut reproduire la même chose mais sans la validation du schéma pour ne pas trop impacter la perf.</p>
 <pre class="language-php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
 
 <span class="token keyword">namespace</span> <span class="token package">App<span class="token punctuation">\</span>Controller</span><span class="token punctuation">;</span>
 
 <span class="token keyword">use</span> <span class="token package">Doctrine<span class="token punctuation">\</span>ORM<span class="token punctuation">\</span>EntityManagerInterface</span><span class="token punctuation">;</span>
-<span class="token keyword">use</span> <span class="token package">Doctrine<span class="token punctuation">\</span>ORM<span class="token punctuation">\</span>Tools<span class="token punctuation">\</span>SchemaValidator</span><span class="token punctuation">;</span>
 <span class="token keyword">use</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>HttpFoundation<span class="token punctuation">\</span>Response</span><span class="token punctuation">;</span>
 <span class="token keyword">use</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>Routing<span class="token punctuation">\</span>Attribute<span class="token punctuation">\</span>Route</span><span class="token punctuation">;</span>
 <span class="token keyword">use</span> <span class="token keyword">function</span> <span class="token package">sprintf</span><span class="token punctuation">;</span>
@@ -177,16 +177,6 @@
     <span class="token punctuation">{</span>
         <span class="token variable">$time</span> <span class="token operator">=</span> <span class="token function">microtime</span><span class="token punctuation">(</span><span class="token constant boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token variable">$now</span> <span class="token operator">=</span> <span class="token variable">$entityManager</span><span class="token operator">-></span><span class="token function">getConnection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">executeQuery</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'select now()'</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">fetchOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token variable">$validator</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SchemaValidator</span><span class="token punctuation">(</span><span class="token variable">$entityManager</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token comment">// Validate ORM metadata (mapping issues)</span>
-        <span class="token variable">$mappingErrors</span> <span class="token operator">=</span> <span class="token variable">$validator</span><span class="token operator">-></span><span class="token function">validateMapping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$mappingErrors</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'KO'</span><span class="token punctuation">,</span> <span class="token class-name static-context">Response</span><span class="token operator">::</span><span class="token constant">HTTP_INTERNAL_SERVER_ERROR</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
         <span class="token variable">$responseTime</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword type-casting">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">microtime</span><span class="token punctuation">(</span><span class="token constant boolean">true</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token variable">$time</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
         <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span><span class="token function">sprintf</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'Ok @ %sUTC in %dms'</span><span class="token punctuation">,</span> <span class="token variable">$now</span><span class="token punctuation">,</span> <span class="token variable">$responseTime</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -194,6 +184,10 @@
 <span class="token punctuation">}</span>
 </span></code></pre>
 <p>Même principe, simple et efficace. Ajoutez-y un filtrage IP si besoin.</p>
+<p>Quelques librairies proposent ce type de services, comme  par exemple, si on souhaite une version plus complète.</p>
+<h2 id="pour-conclure">Pour conclure</h2>
+<p>Bien sûr, il existe des solutions plus robustes dans l'écosystème comme le <a href="https://github.com/liip/LiipMonitorBundle">LiipMonitorBundle</a> ou des healthchecks natifs via le composant <code>Webhook</code> de Symfony, mais cette approche &quot;maison&quot; a le mérite d'être instantanée à mettre en place et sans aucune dépendance.</p>
+<p>C'est le genre de petit script qui transforme une mise en prod stressante en une simple formalité validée automatiquement. C'est un premier pas essentiel vers une culture DevOps saine : l'application est capable de s'auto-diagnostiquer, ne serait-ce que sommairement. Alors, pourquoi s'en priver ?</p>
 
 
     
