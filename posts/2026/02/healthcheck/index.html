@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L&#39;intérêt d&#39;un endpoint de healthcheck</title>
+    <meta name="description" content="">
+    <meta name="author" content="Florent Destremau">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://florent.cc/posts/2026/02/healthcheck/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://florent.cc/posts/2026/02/healthcheck/">
+    <meta property="og:title" content="L&#39;intérêt d&#39;un endpoint de healthcheck">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="https://florent.cc/img/florent.jpg">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="Florent Destremau">
+    
+    <meta property="article:published_time" content="2026-02-05T00:00:00.000Z">
+    <meta property="article:author" content="Florent Destremau">
+    
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@FloDestremau">
+    <meta name="twitter:creator" content="@FloDestremau">
+    <meta name="twitter:title" content="L&#39;intérêt d&#39;un endpoint de healthcheck">
+    <meta name="twitter:description" content="">
+    <meta name="twitter:image" content="https://florent.cc/img/florent.jpg">
+
+    <link rel="stylesheet" href="/bundle.css">
+    <link rel="icon" href="/img/favicon.ico">
+    <link href="https://unpkg.com/prismjs@1.20.0/themes/prism.css" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        
+        "headline": "L&#39;intérêt d&#39;un endpoint de healthcheck",
+        "description": "",
+        "datePublished": "2026-02-05T00:00:00.000Z",
+        "author": {
+            "@type": "Person",
+            "name": "Florent Destremau",
+            "url": "https://florent.cc"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Florent Destremau",
+            "url": "https://florent.cc"
+        },
+        "url": "https://florent.cc/posts/2026/02/healthcheck/",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://florent.cc/posts/2026/02/healthcheck/"
+        }
+        
+    }
+    </script>
+<!--    analytics  -->
+    <script defer="" src="https://cloud.umami.is/script.js" data-website-id="652e7403-79d2-4332-b279-45b33272de6a"></script>
+    <script defer="" async="" src="https://tracker.hakanai.io/hakanai.min.js" data-site="8944cb50-bf23-4016-a94c-c39aea83e8a2" data-link-tracking="true"></script>
+    <!--    /analytics  -->
+</head>
+
+<body>
+<div class="background"></div>
+<div class="content">
+    <header>
+        <div>
+            <a href="/">
+                <img src="/img/florent.jpg" width="80" height="80" alt="Florent Destremau">
+                <p>Florent Destremau</p>
+            </a>
+            <div class="lead">CTO Freelance et Dev PHP</div>
+            <p>
+                CTO fullstack en PHP et JS, je mets les mains dans le code pour accélérer vos projets.
+                <br>
+                Retrouvez-moi sur <a target="_blank" href="https://www.linkedin.com/in/florent-destremau/">LinkedIn</a>,
+                sur <a target="_blank" href="https://x.com/FloDestremau">X.com</a> ou consultez mon
+                <a target="_blank" href="https://github.com/florentdestremau">Github</a>.
+            </p>
+        </div>
+        <nav>
+            <a href="/#mes-articles">Blog</a>
+            <a href="/about">À&nbsp;propos</a>
+        </nav>
+    </header>
+    <h1 id="l-interet-d-un-endpoint-de-healthcheck">L'intérêt d'un endpoint de healthcheck</h1>
+<p>Une nouvelle habitude bonne à prendre sur vos projets est d'avoir un controller et/ou une commande de healthcheck.</p>
+<h2 id="en-commande">En commande</h2>
+<pre class="language-php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+<span class="token keyword">namespace</span> <span class="token package">App<span class="token punctuation">\</span>Command</span><span class="token punctuation">;</span>
+
+<span class="token keyword">use</span> <span class="token package">Doctrine<span class="token punctuation">\</span>ORM<span class="token punctuation">\</span>EntityManagerInterface</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token package">Doctrine<span class="token punctuation">\</span>ORM<span class="token punctuation">\</span>Tools<span class="token punctuation">\</span>SchemaValidator</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>Console<span class="token punctuation">\</span>Attribute<span class="token punctuation">\</span>AsCommand</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>Console<span class="token punctuation">\</span>Command<span class="token punctuation">\</span>Command</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>Console<span class="token punctuation">\</span>Style<span class="token punctuation">\</span>SymfonyStyle</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token keyword">function</span> <span class="token package">sprintf</span><span class="token punctuation">;</span>
+
+<span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name">AsCommand</span><span class="token punctuation">(</span>
+    <span class="token attribute-class-name class-name">name</span><span class="token punctuation">:</span> <span class="token string single-quoted-string">'app:healthcheck'</span><span class="token punctuation">,</span>
+    <span class="token attribute-class-name class-name">description</span><span class="token punctuation">:</span> <span class="token string single-quoted-string">'Basic check if app is running.'</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span></span><span class="token delimiter punctuation">]</span></span>
+<span class="token keyword">class</span> <span class="token class-name-definition class-name">HealthCheckCommand</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__construct</span><span class="token punctuation">(</span><span class="token keyword">private</span> <span class="token keyword">readonly</span> <span class="token class-name type-declaration">EntityManagerInterface</span> <span class="token variable">$entityManager</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__invoke</span><span class="token punctuation">(</span><span class="token class-name type-declaration">SymfonyStyle</span> <span class="token variable">$io</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword return-type">int</span>
+    <span class="token punctuation">{</span>
+        <span class="token variable">$time</span> <span class="token operator">=</span> <span class="token function">microtime</span><span class="token punctuation">(</span><span class="token constant boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$now</span> <span class="token operator">=</span> <span class="token variable">$this</span><span class="token operator">-></span><span class="token property">entityManager</span><span class="token operator">-></span><span class="token function">getConnection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">executeQuery</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'select now()'</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">fetchOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token variable">$validator</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SchemaValidator</span><span class="token punctuation">(</span><span class="token variable">$this</span><span class="token operator">-></span><span class="token property">entityManager</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Validate ORM metadata (mapping issues)</span>
+        <span class="token variable">$mappingErrors</span> <span class="token operator">=</span> <span class="token variable">$validator</span><span class="token operator">-></span><span class="token function">validateMapping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$mappingErrors</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token variable">$io</span><span class="token operator">-></span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'Schema validation failed'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">return</span> <span class="token class-name static-context">Command</span><span class="token operator">::</span><span class="token constant">FAILURE</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token variable">$responseTime</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword type-casting">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">microtime</span><span class="token punctuation">(</span><span class="token constant boolean">true</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token variable">$time</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token variable">$io</span><span class="token operator">-></span><span class="token function">success</span><span class="token punctuation">(</span><span class="token function">sprintf</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'Ok @ %sUTC in %dms'</span><span class="token punctuation">,</span> <span class="token variable">$now</span><span class="token punctuation">,</span> <span class="token variable">$responseTime</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token class-name static-context">Command</span><span class="token operator">::</span><span class="token constant">SUCCESS</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</span></code></pre>
+<p>L'usage est assez simple:</p>
+<pre class="language-shell"><code class="language-shell">❯ bin/console app:healthcheck
+                                                                                           
+ <span class="token punctuation">[</span>OK<span class="token punctuation">]</span> Ok @ <span class="token number">2026</span>-02-04 <span class="token number">22</span>:24:07.035493+00UTC <span class="token keyword">in</span> 50ms                                        
+                                                                                            </code></pre>
+<p>On peut ajouter ici quelques autres endpoints comme l'accès au cache si on en a. Ensuite les applications sont nombreuses, en voici deux simples</p>
+<h3 id="premier-usage-securiser-le-deploiement-blue-green">Premier usage: sécuriser le déploiement blue/green</h3>
+<p>Si vous utilisez un déploiement roulant comme https://deployer.org/ vous pouvez faire un pre-check avant de basculer:</p>
+<pre class="language-php"><code class="language-php"><span class="token comment">// deploy.php</span>
+
+<span class="token function">task</span><span class="token punctuation">(</span>
+    <span class="token string single-quoted-string">'deploy:health-check'</span><span class="token punctuation">,</span>
+    <span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'cd  &amp;&amp; bin/console app:healthcheck'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">before</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'deploy:symlink'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'deploy:health-check'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h3 id="deuxieme-usage-monitoring-tout-bete">Deuxième usage: monitoring tout bête</h3>
+<p>En version très DIY (et non exaustive, vous pouvez ping avec un crontab votre propre appli).</p>
+<pre class="language-shell"><code class="language-shell"><span class="token comment"># crontab</span>
+* * * * * bin/console app:health-check <span class="token operator">&amp;&amp;</span> send_uptime_signal</code></pre>
+<h2 id="en-controller">En controller</h2>
+<pre class="language-php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+<span class="token keyword">namespace</span> <span class="token package">App<span class="token punctuation">\</span>Controller</span><span class="token punctuation">;</span>
+
+<span class="token keyword">use</span> <span class="token package">Doctrine<span class="token punctuation">\</span>ORM<span class="token punctuation">\</span>EntityManagerInterface</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token package">Doctrine<span class="token punctuation">\</span>ORM<span class="token punctuation">\</span>Tools<span class="token punctuation">\</span>SchemaValidator</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>HttpFoundation<span class="token punctuation">\</span>Response</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token package">Symfony<span class="token punctuation">\</span>Component<span class="token punctuation">\</span>Routing<span class="token punctuation">\</span>Attribute<span class="token punctuation">\</span>Route</span><span class="token punctuation">;</span>
+<span class="token keyword">use</span> <span class="token keyword">function</span> <span class="token package">sprintf</span><span class="token punctuation">;</span>
+
+<span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name-definition class-name">HealthCheckController</span>
+<span class="token punctuation">{</span>
+    <span class="token attribute"><span class="token delimiter punctuation">#[</span><span class="token attribute-content"><span class="token attribute-class-name class-name">Route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'/healthcheck'</span><span class="token punctuation">,</span> <span class="token attribute-class-name class-name">name</span><span class="token punctuation">:</span> <span class="token string single-quoted-string">'app_healthcheck'</span><span class="token punctuation">)</span></span><span class="token delimiter punctuation">]</span></span>
+    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">__invoke</span><span class="token punctuation">(</span><span class="token class-name type-declaration">EntityManagerInterface</span> <span class="token variable">$entityManager</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token class-name return-type">Response</span>
+    <span class="token punctuation">{</span>
+        <span class="token variable">$time</span> <span class="token operator">=</span> <span class="token function">microtime</span><span class="token punctuation">(</span><span class="token constant boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$now</span> <span class="token operator">=</span> <span class="token variable">$entityManager</span><span class="token operator">-></span><span class="token function">getConnection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">executeQuery</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'select now()'</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">fetchOne</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token variable">$validator</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SchemaValidator</span><span class="token punctuation">(</span><span class="token variable">$entityManager</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// Validate ORM metadata (mapping issues)</span>
+        <span class="token variable">$mappingErrors</span> <span class="token operator">=</span> <span class="token variable">$validator</span><span class="token operator">-></span><span class="token function">validateMapping</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$mappingErrors</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'KO'</span><span class="token punctuation">,</span> <span class="token class-name static-context">Response</span><span class="token operator">::</span><span class="token constant">HTTP_INTERNAL_SERVER_ERROR</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token variable">$responseTime</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword type-casting">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">microtime</span><span class="token punctuation">(</span><span class="token constant boolean">true</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token variable">$time</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Response</span><span class="token punctuation">(</span><span class="token function">sprintf</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'Ok @ %sUTC in %dms'</span><span class="token punctuation">,</span> <span class="token variable">$now</span><span class="token punctuation">,</span> <span class="token variable">$responseTime</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</span></code></pre>
+<p>Même principe, simple et efficace. Ajoutez-y un filtrage IP si besoin.</p>
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <footer class="post-nav">
+        <hr>
+        <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+            <div>
+                
+                <a href="/posts/2025/12/de-l-usage-des-dto-dans-les-formulaires/" rel="prev">← Article précédent<br><strong>De l&#39;usage des DTO dans les formulaires</strong></a>
+                
+            </div>
+            <div style="margin-left:auto;text-align:right;">
+                
+            </div>
+        </div>
+    </footer>
+    
+    
+</div>
+</body>
+
+</html>
