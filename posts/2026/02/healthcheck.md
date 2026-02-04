@@ -2,6 +2,7 @@
 title: L'intérêt d'un endpoint de healthcheck
 date: 2026-02-05
 description: 
+draft: true
 ---
 
 # L'intérêt d'un endpoint de healthcheck
