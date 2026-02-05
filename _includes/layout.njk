@@ -81,9 +81,11 @@
 </head>
 
 <body>
-<button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle dark mode">
+<button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle theme">
     <svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
     </svg>
 </button>
 <div class="background"></div>
@@ -147,34 +149,56 @@
     {% endif %}
 </div>
 <script>
-    // Dark mode toggle script
+    // Theme toggle script with system/light/dark modes
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     const htmlElement = document.documentElement;
 
     // SVG icons
-    const moonIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
-    const sunIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    const systemIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
+    const lightIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    const darkIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
 
-    // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    if (currentTheme === 'dark') {
-        htmlElement.setAttribute('data-theme', 'dark');
-        themeToggleBtn.innerHTML = sunIcon;
+    // Apply theme based on preference
+    function applyTheme(theme) {
+        if (theme === 'system') {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            htmlElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            themeToggleBtn.innerHTML = systemIcon;
+        } else if (theme === 'light') {
+            htmlElement.setAttribute('data-theme', 'light');
+            themeToggleBtn.innerHTML = lightIcon;
+        } else if (theme === 'dark') {
+            htmlElement.setAttribute('data-theme', 'dark');
+            themeToggleBtn.innerHTML = darkIcon;
+        }
     }
 
-    // Listen for toggle changes
-    themeToggleBtn.addEventListener('click', function() {
-        const isDark = htmlElement.getAttribute('data-theme') === 'dark';
+    // Check for saved theme preference or default to system
+    const currentTheme = localStorage.getItem('theme') || 'system';
+    applyTheme(currentTheme);
 
-        if (isDark) {
-            htmlElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-            themeToggleBtn.innerHTML = moonIcon;
-        } else {
-            htmlElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-            themeToggleBtn.innerHTML = sunIcon;
+    // Listen for system theme changes when in system mode
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (localStorage.getItem('theme') === 'system') {
+            htmlElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
         }
+    });
+
+    // Cycle through themes: system -> light -> dark -> system
+    themeToggleBtn.addEventListener('click', function() {
+        const currentTheme = localStorage.getItem('theme') || 'system';
+        let nextTheme;
+
+        if (currentTheme === 'system') {
+            nextTheme = 'light';
+        } else if (currentTheme === 'light') {
+            nextTheme = 'dark';
+        } else {
+            nextTheme = 'system';
+        }
+
+        localStorage.setItem('theme', nextTheme);
+        applyTheme(nextTheme);
     });
 </script>
 </body>
