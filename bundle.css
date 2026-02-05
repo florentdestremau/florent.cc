@@ -1,9 +1,38 @@
+:root {
+    --bg-color: #fff;
+    --text-color: #000;
+    --bg-pattern-1: #e5e5f7;
+    --bg-pattern-2: #444cf7;
+    --link-color: #0b84ff;
+    --border-color: #ccc;
+    --label-color: #555;
+    --article-bg: #fff;
+    --input-bg: #fff;
+    --code-bg: #fff;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --bg-pattern-1: #2a2a2a;
+    --bg-pattern-2: #5858ff;
+    --link-color: #4da6ff;
+    --border-color: #444;
+    --label-color: #aaa;
+    --article-bg: #242424;
+    --input-bg: #2a2a2a;
+    --code-bg: #2a2a2a;
+}
+
 html, body {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding: 0;
     margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .content {
@@ -18,11 +47,12 @@ div.background {
     position: fixed;
     width: 100vw;
     height: 100vh;
-    background-color: #e5e5f7;
+    background-color: var(--bg-pattern-1);
     opacity: 0.2;
-    background-image: radial-gradient(#444cf7 0.5px, #e5e5f7 0.5px);
+    background-image: radial-gradient(var(--bg-pattern-2) 0.5px, var(--bg-pattern-1) 0.5px);
     background-size: 10px 10px;
     z-index: -1;
+    transition: background-color 0.3s ease, background-image 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -95,24 +125,27 @@ footer {
 }
 
 a {
-    color: #0b84ff;
+    color: var(--link-color);
     text-decoration: underline;
+    transition: color 0.3s ease;
 }
 
 label {
     display: block;
     margin-bottom: .25em;
     font-size: .9rem;
-    color: #555;
+    color: var(--label-color);
+    transition: color 0.3s ease;
 }
 
 input, textarea, select, button {
     font: inherit;
-    color: inherit;
+    color: var(--text-color);
     padding: .5rem .6rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background: #fff;
+    background: var(--input-bg);
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 textarea {
@@ -127,9 +160,10 @@ img, video {
 
 article {
     padding: 1.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 15px;
-    background: #fff;
+    background: var(--article-bg);
+    transition: background 0.3s ease, border-color 0.3s ease;
 
     h2 {
         text-align: center;
@@ -153,6 +187,35 @@ article {
 }
 
 pre {
-    background: #fff;
+    background: var(--code-bg);
     padding: 1rem;
+    transition: background 0.3s ease;
+}
+
+/* Dark mode toggle button */
+.theme-toggle-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1000;
+    opacity: 0.5;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.theme-icon {
+    display: block;
+    color: var(--text-color);
+    transition: color 0.3s ease;
 }
