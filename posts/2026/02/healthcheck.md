@@ -1,13 +1,12 @@
 ---
 title: L'intérêt d'un endpoint de healthcheck
 date: 2026-02-05
-description: 
-draft: true
+description: Implémentez un endpoint de healthcheck en Symfony pour sécuriser vos déploiements. Guide pratique avec exemples de commande console et controller HTTP, validation du schéma Doctrine, et intégration dans vos workflows CI/CD et monitoring.
 ---
 
 # L'intérêt d'un endpoint de healthcheck
 
-Une nouvelle habitude bonne à prendre sur vos projets est d'avoir un controller et/ou une commande de healthcheck. C'est léger, sans dépendance et rapide à mettre en place.
+Une nouvelle habitude bonne à prendre sur vos projets est d’avoir un controller ou bien une commande de healthcheck. C’est léger, sans dépendance et rapide à mettre en place.
 
 ## En commande
 
@@ -58,7 +57,7 @@ class HealthCheckCommand
 }
 ```
 
-L'usage est assez simple:
+L’usage est assez simple :
 ```shell
 ❯ bin/console app:healthcheck
                                                                                            
@@ -66,11 +65,11 @@ L'usage est assez simple:
                                                                                             
 ```
 
-On peut ajouter ici quelques autres endpoints comme l'accès au cache si on en a. Ensuite les applications sont nombreuses, en voici deux simples
+On peut ajouter ici quelques autres endpoints comme l’accès au cache si on en a. Ensuite les applications sont nombreuses, en voici deux simples
 
 ### Premier usage: sécuriser le déploiement blue/green
 
-Si vous utilisez un déploiement roulant comme https://deployer.org/ vous pouvez faire un pre-check avant de basculer, et vous éviter quelques pages blanches à l'occasion.
+Si vous utilisez un déploiement roulant comme https://deployer.org/, vous pouvez faire un pre check avant de basculer, et vous éviter quelques pages blanches à l’occasion.
 
 ```php
 // deploy.php
@@ -82,9 +81,9 @@ task(
 before('deploy:symlink', 'deploy:health-check');
 ```
 
-### Deuxième usage: monitoring tout bête
+### Deuxième usage : monitoring tout bête
 
-En version très DIY (et non exaustive, vous pouvez ping avec un crontab votre propre appli).
+En version très DIY (et non exhaustive, vous pouvez ping avec un crontab votre propre appli).
 
 ```shell
 # crontab
@@ -93,7 +92,7 @@ En version très DIY (et non exaustive, vous pouvez ping avec un crontab votre p
 
 ## En controller
 
-Côté HTTP on peut reproduire la même chose mais sans la validation du schéma pour ne pas trop impacter la perf.
+Côté HTTP, on peut reproduire la même chose, mais sans la validation du schéma pour ne pas trop impacter la perf.
 
 ```php
 <?php
@@ -119,12 +118,10 @@ final class HealthCheckController
 }
 ```
 
-Même principe, simple et efficace. Ajoutez-y un filtrage IP si besoin.
-
-Quelques librairies proposent ce type de services, comme  par exemple, si on souhaite une version plus complète.
+Même principe, simple et efficace, sans le schema pour être plus léger. Ajoutez-y un filtrage IP si besoin selon votre stratégie de gestion des risques.
 
 ## Pour conclure
 
-Bien sûr, il existe des solutions plus robustes dans l'écosystème comme le [LiipMonitorBundle](https://github.com/liip/LiipMonitorBundle) ou des healthchecks natifs via le composant `Webhook` de Symfony, mais cette approche "maison" a le mérite d'être instantanée à mettre en place et sans aucune dépendance.
+Bien sûr, il existe des solutions plus robustes dans l’écosystème Symfony comme le [LiipMonitorBundle](https://github.com/liip/LiipMonitorBundle) ou [Symfony healthcheck bundle](https://github.com/MacPaw/symfony-health-check-bundle) ou des healthchecks natifs via le composant `Webhook` de Symfony, mais cette approche "maison" a le mérite d’être instantanée à mettre en place et sans aucune dépendance.
 
-C'est le genre de petit script qui transforme une mise en prod stressante en une simple formalité validée automatiquement. C'est un premier pas essentiel vers une culture DevOps saine : l'application est capable de s'auto-diagnostiquer, ne serait-ce que sommairement. Alors, pourquoi s'en priver ? Ça ne dispense bien sûr pas d'avoir une CI en amont mais c'est un petit check simple qui sécurise en aval.
+C’est le genre de petit script qui transforme une mise en prod stressante en une simple formalité validée automatiquement. C’est un premier pas essentiel vers une culture DevOps saine : l’application est capable de s’autodiagnostiquer, ne serait-ce que sommairement. Alors, pourquoi s’en priver ? Ça ne dispense bien sûr pas d’avoir une CI en amont, mais c’est un petit check simple qui sécurise en aval.
