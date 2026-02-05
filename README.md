@@ -24,6 +24,7 @@ npm run build
 - Trick: turbo-frame, lazy-loading, turbo-stream pour vos dropdown complexes
 - pg_textsearch ?
 - Symfony et le cache...
+- Déployer en prod ne doit pas être une crainte
 
 ## DOING
 - Toujours avoir un /up ou /healthcheck
