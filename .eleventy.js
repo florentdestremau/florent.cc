@@ -33,6 +33,16 @@ module.exports = function (eleventyConfig) {
         return new Date(date).toISOString();
     });
 
+    // Reading time filter: calculates estimated reading time
+    eleventyConfig.addFilter("readingTime", content => {
+        if (!content) return '1 min';
+        const wordsPerMinute = 200;
+        const text = content.replace(/<[^>]*>/g, ''); // Remove HTML tags
+        const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+        const minutes = Math.ceil(wordCount / wordsPerMinute);
+        return `${minutes} min`;
+    });
+
     eleventyConfig.addPlugin(IdAttributePlugin);
     return {};
 };

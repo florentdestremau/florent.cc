@@ -20,7 +20,7 @@ Allier **vision produit**, **leadership technique** et **exécution hands-on** p
 <article>
 
 {% for post in collections.posts reversed %}
-<em>{{ post.date | dateFr }}:</em>
+<em>{{ post.date | dateFr }} · {{ post.templateContent | readingTime }}:</em>
 <br>
 <a href="{{ post.url }}">{{ post.data.title }}</a>
 {% endfor %}
@@ -33,7 +33,7 @@ Allier **vision produit**, **leadership technique** et **exécution hands-on** p
 <article>
 
 {% for post in collections.drafts reversed %}
-<em>{{ post.date | dateFr }}:</em>
+<em>{{ post.date | dateFr }} · {{ post.templateContent | readingTime }}:</em>
 <br>
 <a href="{{ post.url }}">{{ post.data.title }}</a> 🚧
 {% endfor %}

@@ -127,4 +127,4 @@ Quelques librairies proposent ce type de services, comme  par exemple, si on sou
 
 Bien sûr, il existe des solutions plus robustes dans l'écosystème comme le [LiipMonitorBundle](https://github.com/liip/LiipMonitorBundle) ou des healthchecks natifs via le composant `Webhook` de Symfony, mais cette approche "maison" a le mérite d'être instantanée à mettre en place et sans aucune dépendance.
 
-C'est le genre de petit script qui transforme une mise en prod stressante en une simple formalité validée automatiquement. C'est un premier pas essentiel vers une culture DevOps saine : l'application est capable de s'auto-diagnostiquer, ne serait-ce que sommairement. Alors, pourquoi s'en priver ?
+C'est le genre de petit script qui transforme une mise en prod stressante en une simple formalité validée automatiquement. C'est un premier pas essentiel vers une culture DevOps saine : l'application est capable de s'auto-diagnostiquer, ne serait-ce que sommairement. Alors, pourquoi s'en priver ? Ça ne dispense bien sûr pas d'avoir une CI en amont mais c'est un petit check simple qui sécurise en aval.
