@@ -6,8 +6,9 @@ description: Comment faire fonctionner le cache du controller Symfony et la bali
 
 # Partager le pool de cache entre controller et Twig en Symfony
 
+{% raw %}
 Symfony propose deux endroits naturels pour mettre du cache applicatif : dans les controllers via `CacheInterface`, et dans les templates via la balise `{% cache %}` de `twig/cache-extra`. Ces deux mécanismes fonctionnent très bien séparément, mais par défaut ils n'utilisent pas le même pool de cache.
-
+{% endraw %}
 Ce cloisonnement est souvent invisible au départ, puis devient gênant dès qu'on veut une stratégie de cache cohérente sur l'ensemble de l'application. La solution tient en trois lignes de config.
 
 ## Le problème
@@ -28,6 +29,7 @@ public function index(CacheInterface $cache): Response
 
 Côté Twig, `twig/cache-extra` permet de cacher des blocs de template :
 
+{% raw %}
 ```twig
 {% cache 'my_block' ttl(300) %}
     {# rendu coûteux #}
@@ -36,6 +38,7 @@ Côté Twig, `twig/cache-extra` permet de cacher des blocs de template :
     {% endfor %}
 {% endcache %}
 ```
+{% endraw %}
 
 Ces deux systèmes sont indépendants. Le controller utilise `cache.app`, Twig utilise son propre service `twig.cache`. Deux pools séparés, deux configurations séparées, deux backends potentiellement différents.
 
@@ -97,12 +100,13 @@ $data = $cache->get('my_key', function (ItemInterface $item) {
 ```
 
 Et dans Twig :
-
+{% raw %}
 ```twig
 {% cache 'my_block' ttl(300) tags(['product_42']) %}
     ...
 {% endcache %}
 ```
+{% endraw %}
 
 Puis invalider les deux d'un seul appel, en injectant `TagAwareCacheInterface` :
 
