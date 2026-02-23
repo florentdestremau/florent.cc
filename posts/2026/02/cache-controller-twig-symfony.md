@@ -1,6 +1,6 @@
 ---
 title: Partager le pool de cache entre controller et Twig en Symfony
-date: 2026-02-21
+date: 2026-02-23
 description: Comment faire fonctionner le cache du controller Symfony et la balise {% cache %} de Twig sur le même pool, avec une seule ligne dans services.yaml.
 ---
 
