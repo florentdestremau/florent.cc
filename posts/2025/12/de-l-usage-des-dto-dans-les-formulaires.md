@@ -4,7 +4,6 @@ date: 2025-12-09
 description: Les DTO dans les formulaires Symfony sont-ils vraiment nécessaires ? Analyse critique des cas d'usage pertinents et des alternatives plus simples avec tests fonctionnels.
 ---
 
-# De l'usage des DTO dans les formulaires
 
 Je trouve que le débat des DTO est souvent très biaisé : on l'érige comme évidence lorsqu'on on en débat, mais on ne
 parle que très rarement du contexte et du coût associé en maintenance. L'argumentaire principal est de se rapprocher du

@@ -3,7 +3,6 @@ title: Utiliser Symfony Autocomplete pour créer des entités à la volée dans 
 date: 2023-10-23
 description: Comment créer des entités directement depuis un champ autocomplete Symfony UX en utilisant Tom Select et un controller Stimulus personnalisé.
 ---
-# Utiliser Symfony Autocomplete pour créer des entités à la volée dans un formulaire
 
 
 J'ai récemment eu besoin de créer un formulaire de création d'utilisateur, où je devais remplir des attributs. Ces attributs sont des entités à part entière et devaient pouvoir être créés à la volée lors de la saisie du formulaire.

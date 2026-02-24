@@ -4,8 +4,6 @@ date: 2026-02-23
 description: Comment faire fonctionner le cache du controller Symfony et la balise {% cache %} de Twig sur le même pool, avec une seule ligne dans services.yaml.
 ---
 
-# Partager le pool de cache entre controller et Twig en Symfony
-
 {% raw %}
 Symfony propose deux endroits naturels pour mettre du cache applicatif : dans les controllers via `CacheInterface`, et dans les templates via la balise `{% cache %}` de `twig/cache-extra`. Ces deux mécanismes fonctionnent très bien séparément, mais par défaut ils n'utilisent pas le même pool de cache.
 {% endraw %}

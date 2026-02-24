@@ -4,7 +4,6 @@ date: 2026-02-05
 description: Implémentez un endpoint de healthcheck en Symfony pour sécuriser vos déploiements. Guide pratique avec exemples de commande console et controller HTTP, validation du schéma Doctrine, et intégration dans vos workflows CI/CD et monitoring.
 ---
 
-# Healthcheck Symfony : sécurisez vos déploiements en quelques lignes
 
 Une nouvelle habitude bonne à prendre sur vos projets est d’avoir un controller ou bien une commande de healthcheck. C’est léger, sans dépendance et rapide à mettre en place.
 

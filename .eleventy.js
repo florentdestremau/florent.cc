@@ -43,6 +43,12 @@ module.exports = function (eleventyConfig) {
         return `${minutes} min`;
     });
 
+    // Remove first h1 from content (since we display it from template)
+    eleventyConfig.addFilter("removeFirstH1", content => {
+        if (!content) return '';
+        return content.replace(/<h1[^>]*>.*?<\/h1>/i, '');
+    });
+
     eleventyConfig.addPlugin(IdAttributePlugin);
     return {};
 };

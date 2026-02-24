@@ -110,6 +110,16 @@
             <a href="/about">À&nbsp;propos</a>
         </nav>
     </header>
+
+    {% if tags and ('posts' in tags) %}
+    <h1>{{ title }}</h1>
+    <div class="post-meta">
+        <time datetime="{{ date | dateISO }}">{{ date | dateFr }}</time>
+        <span class="separator">•</span>
+        <span>{{ content | readingTime }} de lecture</span>
+    </div>
+    {% endif %}
+
     {{ content | safe }}
 
     {% if tags and ('posts' in tags) and collections and collections.posts %}
