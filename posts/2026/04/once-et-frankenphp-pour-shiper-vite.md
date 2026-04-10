@@ -33,7 +33,7 @@ L'astuce qui rend Once vraiment fluide : pointer un sous-domaine wildcard vers l
 *.example.com → IP du VPS
 ```
 
-Une fois cette entrée DNS en place, chaque nouvelle application qu'on déploie via Once est accessible immédiatement sur `mon-app.example.com`, sans toucher au DNS ni configurer un reverse proxy. Once détecte le domaine à partir du nom de l'application, provisionne le certificat Let's Encrypt automatiquement, et c'est prêt.
+Une fois cette entrée DNS en place, chaque nouvelle application qu'on déploie via Once est accessible immédiatement sur `mon-app.example.com`, **sans toucher au DNS** ni configurer un reverse proxy. Once détecte le domaine à partir du nom de l'application, provisionne le certificat Let's Encrypt automatiquement, et c'est prêt.
 
 Résultat concret : on déploie une nouvelle idée en quelques minutes depuis le premier `git push`.
 
@@ -45,7 +45,7 @@ Ce qui a changé, c'est l'IA. Générer et déboguer un Dockerfile est devenu tr
 
 ## FrankenPHP : un conteneur pour tout
 
-[FrankenPHP](https://frankenphp.dev) est un runtime PHP qui embarque PHP directement dans [Caddy](https://caddyserver.com). Caddy gère le routing HTTP, le SSL, et intègre nativement un hub Mercure pour le temps réel. Un seul conteneur remplace ce qui était habituellement trois services séparés : Nginx (ou Apache), PHP-FPM, et un hub Mercure.
+[FrankenPHP](https://frankenphp.dev) est un runtime PHP qui embarque PHP directement dans [Caddy](https://caddyserver.com). Caddy gère le routing HTTP, le SSL, et intègre nativement un hub Mercure pour le temps réel. **Un seul conteneur** remplace ce qui était habituellement trois services séparés : Nginx (ou Apache), PHP-FPM, et un hub Mercure.
 
 ### Le Dockerfile Symfony
 
@@ -209,6 +209,6 @@ Un volume `/storage` persiste la base SQLite entre les redéploiements. Pour des
 
 ## Ce que cette stack rend possible
 
-En combinant Once sur un VPS wildcard, FrankenPHP, et un pipeline CI simple, le coût de déploiement d'une nouvelle idée en Symfony devient négligeable. On crée un repo, on configure deux secrets GitHub, on `git push` — et l'application est en production avec HTTPS, migrations appliquées, et Mercure disponible si besoin — le tout générable en quelques minutes par un LLM.
+En combinant Once sur un VPS wildcard, FrankenPHP, et un pipeline CI simple, le **coût de déploiement** d'une nouvelle idée en Symfony devient **négligeable**. On crée un repo, on configure deux secrets GitHub, on `git push` — et l'application est en production avec HTTPS, migrations appliquées, et Mercure disponible si besoin — le tout générable en quelques minutes par un LLM.
 
 De mon côté, j'ai créé un skill MCP pour Claude localement que je compte pouvoir publier dans les semaines à venir. J'ai aussi essayé de copier une app PHP en Rails, et il faut avouer qu'ils ont des valeurs par défaut sur le Dockerfile, la CI GitHub, etc. qui donnent envie d'avoir un équivalent standardisé dans l'écosystème Symfony.
