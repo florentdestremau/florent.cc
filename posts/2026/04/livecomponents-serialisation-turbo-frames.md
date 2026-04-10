@@ -129,4 +129,6 @@ Le pattern qui tient la route au quotidien, c'est de les cantonner à leur meill
 
 Soumettre au controller classique ne signifie pas renoncer au dynamisme : on garde les LiveComponents pour tout ce qui est interaction avant soumission, et on laisse Turbo et Symfony gérer ce qu'ils font le mieux. C'est moins spectaculaire en démo, mais c'est cohérent avec le reste de l'application — et ça ne crée pas de cas particuliers à maintenir.
 
+D'ailleurs, un des cas d'usage les plus fréquents pour justifier un LiveComponent sur un formulaire, c'est l'affichage conditionnel de champs. En pratique, avec un LLM, ça demande 10 lignes de JavaScript inline, directement dans le template. Ça vit près du code, c'est facile à lire et à maintenir, et ça évite d'embarquer toute la mécanique de sérialisation et d'hydratation pour un simple `display: none`. Parfois la solution la plus simple est aussi la meilleure.
+
 La vraie promesse des LiveComponents, c'est de faire du front sans écrire de JavaScript. Elle tient. Mais comme tout outil, elle a un périmètre naturel : ne pas en sortir, c'est souvent la décision la plus pragmatique.
