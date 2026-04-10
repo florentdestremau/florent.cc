@@ -1,6 +1,6 @@
 ---
 title: "De l'idée à la production en quelques minutes : FrankenPHP + Once pour déployer Symfony"
-date: 2026-03-24
+date: 2026-04-09
 description: "Comment déployer une application Symfony en production en quelques minutes avec FrankenPHP et Once : un conteneur unique, SSL automatique, et un pipeline CI simple pour suivre le rythme du vibe-coding."
 
 ---
