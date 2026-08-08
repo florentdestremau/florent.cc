@@ -1,6 +1,8 @@
 ---
 title: "Isoler complètement ses worktrees Git : ports, base et sessions"
 date: 2026-08-08
+image: /img/worktrees-git-isoles.jpg
+imageAlt: "Illustration isométrique : trois environnements de développement miniatures sous cloche de verre, greffés sur les branches d'un même arbre étiqueté master, chacun relié par un câble de couleur à une plaque de port numérotée"
 description: "Faire travailler plusieurs agents en parallèle, c'est autant de stacks complètes à faire tourner. Ports décalés par hash de branche, base clonée par copie de volume Docker et sessions indépendantes : la recette pour des worktrees vraiment autonomes."
 
 ---

@@ -1,3 +1,5 @@
+{# Image de partage : celle de l'article si le frontmatter en définit une, sinon le portrait par défaut. #}
+{% set ogImage = image if image else "/img/florent.jpg" %}
 <!doctype html>
 <html lang="fr">
 
@@ -16,7 +18,8 @@
     <meta property="og:url" content="https://florent.cc{{ page.url }}">
     <meta property="og:title" content="{{ title }}">
     <meta property="og:description" content="{{ description }}">
-    <meta property="og:image" content="https://florent.cc/img/florent.jpg">
+    <meta property="og:image" content="https://florent.cc{{ ogImage }}">
+    {% if imageAlt %}<meta property="og:image:alt" content="{{ imageAlt }}">{% endif %}
     <meta property="og:locale" content="fr_FR">
     <meta property="og:site_name" content="Florent Destremau">
     {% if tags and ('posts' in tags) and date %}
@@ -25,12 +28,13 @@
     {% endif %}
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="{% if image %}summary_large_image{% else %}summary{% endif %}">
     <meta name="twitter:site" content="@FloDestremau">
     <meta name="twitter:creator" content="@FloDestremau">
     <meta name="twitter:title" content="{{ title }}">
     <meta name="twitter:description" content="{{ description }}">
-    <meta name="twitter:image" content="https://florent.cc/img/florent.jpg">
+    <meta name="twitter:image" content="https://florent.cc{{ ogImage }}">
+    {% if imageAlt %}<meta name="twitter:image:alt" content="{{ imageAlt }}">{% endif %}
 
     <link rel="stylesheet" href="/bundle.css">
     <link rel="icon" href="/img/favicon.ico">
@@ -44,6 +48,7 @@
         {% if tags and ('posts' in tags) %}
         "headline": "{{ title }}",
         "description": "{{ description }}",
+        "image": "https://florent.cc{{ ogImage }}",
         "datePublished": "{{ date | dateISO }}",
         "author": {
             "@type": "Person",
@@ -118,6 +123,9 @@
         <span class="separator">•</span>
         <span>{{ content | readingTime }} de lecture</span>
     </div>
+    {% if image %}
+    <img class="post-cover" src="{{ image }}" alt="{{ imageAlt }}" width="1376" height="768" loading="eager">
+    {% endif %}
     {% endif %}
 
     {{ content | safe }}
