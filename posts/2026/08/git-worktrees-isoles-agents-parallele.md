@@ -134,7 +134,7 @@ On arrive au cœur du problème. Chaque worktree a besoin de son Postgres, de so
 
 Comment trouver un port libre ? On pourrait scanner, incrémenter, tenir un registre. J'ai testé, c'est fragile : le port change entre deux démarrages, les fichiers de config se désynchronisent, et le jour où deux worktrees démarrent en même temps c'est la course critique.
 
-L'approche que j'ai retenue, inspirée de mes discussions avec [Bastien Jaillot](https://bastnic.fr/) (JoliCode), est **déterministe** : on hache le nom de la branche, et on en tire un décalage entier fixe. Même branche, même offset, à jamais. Aucun registre à maintenir, aucune collision entre deux instances de la même branche puisqu'il n'y en a qu'une.
+L'approche que j'ai retenue, inspirée de mes discussions avec [Bastien Jaillot](https://bastien.jaillot.fr/) (JoliCode), est **déterministe** : on hache le nom de la branche, et on en tire un décalage entier fixe. Même branche, même offset, à jamais. Aucun registre à maintenir, aucune collision entre deux instances de la même branche puisqu'il n'y en a qu'une.
 
 ```php
 $branch = capture('git rev-parse --abbrev-ref HEAD');
