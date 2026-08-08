@@ -195,6 +195,8 @@ signoff:
     vendor/bin/phpunit --no-coverage
 ```
 
+Le seul vrai défaut de ce `signoff`, c'est qu'il immobilise l'environnement de dev le temps qu'il tourne : base de test recréée, fixtures rechargées. J'ai fini par le faire tourner dans un worktree Git dédié, avec sa propre base et ses propres ports : [voir *Isoler complètement ses worktrees Git*](/posts/2026/08/git-worktrees-isoles-agents-parallele/).
+
 Pour gagner encore en rapidité, **lint-staged** et GrumPHP ciblent nativement les fichiers stagés. En mode hook shell brut, on peut le faire à la main :
 
 ```bash
