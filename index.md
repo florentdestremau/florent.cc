@@ -1,7 +1,7 @@
 ---
 layout: "layout.njk"
 title: Florent Destremau
-description: Je suis Florent Destremau, CTO & Lead Dev freelance — Symfony/PHP, React.
+description: Je suis Florent Destremau, CTO et Lead Dev freelance — Symfony/PHP, React.
 ---
 
 # Bonjour !
