@@ -1,7 +1,7 @@
 ---
 layout: "layout.njk"
 title: À propos de moi - Florent Destremau
-description: Je suis Florent Destremau, CTO Dev PHP/JS freelance.
+description: Je suis Florent Destremau, CTO & Lead Dev freelance.
 ---
 
 À propos de moi
