@@ -10,9 +10,37 @@ description: Je suis Florent Destremau, CTO & Lead Dev freelance — Symfony/PHP
 
 ## Expérience Professionnelle
 
-### Lead Dev Freelance -  [Spyrit](https://www.spyrit.net/) *(2024 - actuel)*
+### Co-fondateur & CTO – [Windoo](https://windoo.fr/) *(2016 – actuel)*
 
-Je participe à la refonte complète de l'ERP des Scouts Unitaires de France – Céphée.
+J'ai co-fondé Windoo avec mon associé Arnaud pour construire une solution tout-en-un d'engagement collaborateur. Windoo propose une solution SaaS qui mesure, analyse et améliore l'expérience des équipes en temps réel, adoptée par des entreprises exigeantes. La société propose également de la formation en entreprise pour les managers. J'en suis toujours le CTO aujourd'hui.
+
+**Stack Technique** : Symfony 7.4, PHP 8.4, PostgreSQL, Twig & Stimulus JS
+
+**Rôle – directeur technique et produit fondateur** :
+
+- Je dirige une **équipe technique de 3 à 5 personnes** au fil du temps, en formant des juniors et en maintenant une exigence de qualité.
+- Je pilote les **choix techniques et architecturaux** du projet depuis le début, pour une application touchant plusieurs centaines de milliers de salariés.
+- Je gère l'**hébergement** intégral des différents sites (landing, application, staging, demo, preprod).
+- Je participe à la **gestion générale de l'entreprise** (comptabilité, recrutement, cohésion, animation), pour un effectif total de 15 à 20 personnes.
+- J'ai porté l'entreprise de 0€ à **1,5 M€ de chiffre d’affaires**, à travers **4 levées de fonds successives (2 M€)** et avec le soutien de la BPI.
+- L'entreprise est à l'**équilibre financier**.
+
+---
+
+### Tech Lead Audit – [Theodo Extend](https://www.theodo.fr/) *(2026)*
+
+J'ai réalisé l'audit technique d'une plateforme de jeu en ligne en vue d'une rénovation majeure, pour faire le point sur
+l'état de santé de la base de code et de sa stack infra associée.
+
+- **Framework 3S** : Stabilité, Sécurité, Scalabilité
+- **DORA metrics** pour évaluer la performance de l'équipe
+- Des **recommandations à court, moyen et long terme** pour améliorer ces points et tenir la roadmap du client
+
+---
+
+### Lead Dev Freelance -  [Spyrit](https://www.spyrit.net/) *(2025–2026)*
+
+J'ai participé à la refonte complète de l'ERP des Scouts Unitaires de France – Céphée, de février 2025 à la fin de la mission en août 2026.
 
 **Céphée** est le nouvel ERP des Scouts Unitaires de France. Il permet aux scouts de s'inscrire pour l'année, aux chefs
 d'organiser les activités et les camps d'été, de suivre les parcours de formation, et aux équipes salariées de
@@ -25,27 +53,10 @@ des rôles.
 
 **Rôle – Responsable technique d'une équipe de 5 personnes** :
 
-- Je contribue directement au développement
-- Je supervise la production
-- Je pilote les choix techniques et architecturaux
-- Je suis force de proposition et garant de la cohérence architecturale
-
----
-
-### Co-fondateur & CTO – [Windoo](https://windoo.fr/) *(2015–2025)*
-
-J'ai co-fondé Windoo avec mon associé Arnaud pour construire une solution tout-en-un d'engagement collaborateur. Windoo propose une solution SaaS qui mesure, analyse et améliore l'expérience des équipes en temps réel, adoptée par des entreprises exigeantes. La société propose également de la formation en entreprise pour les managers.
-
-**Stack Technique** : Symfony 7.4, PHP 8.4, PostgreSQL, Twig & Stimulus JS
-
-**Rôle – directeur technique et produit fondateur** :
-
-- J'ai dirigé un **équipe technique de 3 à 5 personnes** au cours du temps, en formant des juniors et en maintenant une exigeance de qualité.
-- J'ai piloté les **choix techniques et architecturaux** du projet tout du long, pour une application touchant plusieurs centaines de milliers de salariés.
-- J'ai géré l'**hébergement** intégral des différents sites (landing, application, staging, demo, preprod).
-- J'ai participé à la **gestion générale de l'enteprise** (comptabilité, recrutement, cohésion, animation).
-- J'ai porté l'entreprise de 0€ à **plusieurs M€ de chiffre d’affaires**, à travers **plusieurs levées de fonds**.
-- L'entreprise est à l'**équilibre financier**.
+- J'ai contribué directement au développement
+- J'ai supervisé la production
+- J'ai piloté les choix techniques et architecturaux
+- J'ai été force de proposition et garant de la cohérence architecturale
 
 --- 
 
