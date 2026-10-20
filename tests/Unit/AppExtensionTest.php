@@ -53,5 +53,6 @@ final class AppExtensionTest extends TestCase
         yield ["Le worktree, c'est génial jusqu'à ce qu'on veuille le lancer", 'le-worktree-c-est-genial-jusqu-a-ce-qu-on-veuille-le-lancer'];
         yield ['Étape 1 bis : Mise pour figer les versions par projet', 'etape-1-bis-mise-pour-figer-les-versions-par-projet'];
         yield ['Ce que ça change au quotidien', 'ce-que-ca-change-au-quotidien'];
+        yield ['Co-fondateur & CTO – Windoo (2015–2025)', 'co-fondateur-and-cto-windoo-2015-2025'];
     }
 }

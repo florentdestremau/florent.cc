@@ -14,7 +14,7 @@ final class HeadingSlugNormalizer implements TextNormalizerInterface
 
     public function __construct()
     {
-        $this->slugger = new AsciiSlugger('fr');
+        $this->slugger = new AsciiSlugger('fr', ['fr' => ['&' => 'and']]);
     }
 
     public function normalize(string $text, array $context = []): string
