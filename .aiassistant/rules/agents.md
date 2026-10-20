@@ -9,4 +9,4 @@ apply: always
 
 # Styleguide
 
-- always favor pure css in the `bundle.css` file, with minimal and precise usage.
+- always favor pure css in the `public/bundle.css` file, with minimal and precise usage.

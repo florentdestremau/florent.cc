@@ -1,17 +1,28 @@
 # Florent Destremau
 
+Site statique généré par une app Symfony avec [bakslash/static-site-bundle](https://github.com/bakslashHQ/static-site-bundle).
+
+- `content/` : pages et articles en Markdown (frontmatter YAML), un article par fichier `content/posts/AAAA/MM/slug.md`.
+  Un article avec `draft: true` n'apparaît qu'en local.
+- `templates/` : templates Twig.
+- `public/` : CSS, images et fichiers servis tels quels.
+
 ## Install
 
 ```
-npm install
-npm run start
+composer install
+composer serve
 ```
+
+Le site tourne sur http://localhost:8000.
 
 ## Build
 
 ```
-npm run build
+composer build
 ```
+
+Le site est écrit dans `build/`.
 
 ## TODO
 

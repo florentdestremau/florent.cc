@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% set title = post.title %}
+{% set description = post.description %}
+
+{% block body %}
+    <h1 id="{{ post.title|heading_id }}">{{ post.title }}</h1>
+    <div class="post-meta">
+        <time datetime="{{ post.date|date('Y-m-d\\TH:i:s.v\\Z', 'UTC') }}">{{ post.date|date_fr }}</time>
+        <span class="separator">•</span>
+        <span>{{ post.html|reading_time }} de lecture</span>
+    </div>
+    {% if post.image %}
+    <img class="post-cover" src="{{ post.image }}" alt="{{ post.imageAlt }}" width="1376" height="768" loading="eager">
+    {% endif %}
+
+    {{ post.html|raw }}
+
+    {% if previous or next %}
+    <footer class="post-nav">
+        <hr>
+        <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+            <div>
+                {% if previous %}
+                <a href="{{ path('post', previous.routeParameters) }}" rel="prev">← Article précédent<br><strong>{{ previous.title }}</strong></a>
+                {% endif %}
+            </div>
+            <div style="margin-left:auto;text-align:right;">
+                {% if next %}
+                <a href="{{ path('post', next.routeParameters) }}" rel="next">Article suivant →<br><strong>{{ next.title }}</strong></a>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+    {% endif %}
+{% endblock %}
