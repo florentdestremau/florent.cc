@@ -64,7 +64,8 @@
         "build": [
             "@php bin/console cache:clear --env=prod",
             "@php bin/console static-site:generate --env=prod",
-            "rsync -a --exclude=index.php public/ build/",
+            "cp -R public/. build/",
+            "rm build/index.php",
             "touch build/.nojekyll"
         ],
         "serve": "php -S localhost:8000 -t public",
