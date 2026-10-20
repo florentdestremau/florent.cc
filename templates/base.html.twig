@@ -1,0 +1,170 @@
+{# Variables attendues : title, description ; optionnelles : post (article affiché). #}
+{% set post = post ?? null %}
+{% set og_image = post.image ?? '/img/florent.jpg' %}
+{% set canonical = url(app.current_route, app.current_route_parameters) %}
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ description }}">
+    <meta name="author" content="Florent Destremau">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ canonical }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{{ post ? 'article' : 'website' }}">
+    <meta property="og:url" content="{{ canonical }}">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description }}">
+    <meta property="og:image" content="{{ absolute_url(og_image) }}">
+    {% if post.imageAlt ?? false %}
+    <meta property="og:image:alt" content="{{ post.imageAlt }}">
+    {% endif %}
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="Florent Destremau">
+    {% if post %}
+    <meta property="article:published_time" content="{{ post.date|date('Y-m-d\\TH:i:s.v\\Z', 'UTC') }}">
+    <meta property="article:author" content="Florent Destremau">
+    {% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="{{ post.image ?? false ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:site" content="@FloDestremau">
+    <meta name="twitter:creator" content="@FloDestremau">
+    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:description" content="{{ description }}">
+    <meta name="twitter:image" content="{{ absolute_url(og_image) }}">
+    {% if post.imageAlt ?? false %}
+    <meta name="twitter:image:alt" content="{{ post.imageAlt }}">
+    {% endif %}
+
+    <link rel="stylesheet" href="/bundle.css">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {{ (post ? {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title,
+        description: description,
+        image: absolute_url(og_image),
+        datePublished: post.date|date('Y-m-d\\TH:i:s.v\\Z', 'UTC'),
+        author: {'@type': 'Person', name: 'Florent Destremau', url: 'https://florent.cc'},
+        publisher: {'@type': 'Person', name: 'Florent Destremau', url: 'https://florent.cc'},
+        url: canonical,
+        mainEntityOfPage: {'@type': 'WebPage', '@id': canonical},
+    } : {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: 'Florent Destremau',
+        jobTitle: 'CTO Freelance',
+        description: 'CTO fullstack en PHP et JS, je mets les mains dans le code pour accélérer vos projets',
+        url: 'https://florent.cc',
+        image: 'https://florent.cc/img/florent.jpg',
+        sameAs: [
+            'https://www.linkedin.com/in/florent-destremau/',
+            'https://x.com/FloDestremau',
+            'https://github.com/florentdestremau',
+        ],
+    })|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}
+    </script>
+<!--    analytics  -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="652e7403-79d2-4332-b279-45b33272de6a"></script>
+    <script defer async src="https://tracker.hakanai.io/hakanai.min.js" data-site="8944cb50-bf23-4016-a94c-c39aea83e8a2" data-link-tracking="true"></script>
+    <!--    /analytics  -->
+</head>
+
+<body>
+<button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle theme">
+    <svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+    </svg>
+</button>
+<div class="background"></div>
+<div class="content">
+    <header>
+        <div>
+            <a href="{{ path('home') }}">
+                <img src="/img/florent.jpg" width="80" height="80" alt="Florent Destremau">
+                <p>Florent Destremau</p>
+            </a>
+            <div class="lead">CTO Freelance et Dev PHP</div>
+            <p>
+                CTO fullstack en PHP et JS, je mets les mains dans le code pour accélérer vos projets.
+                <br>
+                Retrouvez-moi sur <a target="_blank" href="https://www.linkedin.com/in/florent-destremau/">LinkedIn</a>,
+                sur <a target="_blank" href="https://x.com/FloDestremau">X.com</a> ou consultez mon
+                <a target="_blank" href="https://github.com/florentdestremau">Github</a>.
+            </p>
+        </div>
+        <nav>
+            <a href="{{ path('home') }}#mes-articles">Blog</a>
+            <a href="{{ path('about') }}">À&nbsp;propos</a>
+        </nav>
+    </header>
+
+    {% block body %}{% endblock %}
+</div>
+<script>
+    // Theme toggle script with system/light/dark modes
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const htmlElement = document.documentElement;
+
+    // SVG icons
+    const systemIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
+    const lightIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+    const darkIcon = '<svg class="theme-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+
+    // Apply theme based on preference
+    function applyTheme(theme) {
+        if (theme === 'system') {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            htmlElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            themeToggleBtn.innerHTML = systemIcon;
+        } else if (theme === 'light') {
+            htmlElement.setAttribute('data-theme', 'light');
+            themeToggleBtn.innerHTML = lightIcon;
+        } else if (theme === 'dark') {
+            htmlElement.setAttribute('data-theme', 'dark');
+            themeToggleBtn.innerHTML = darkIcon;
+        }
+    }
+
+    // Check for saved theme preference or default to system
+    const currentTheme = localStorage.getItem('theme') || 'system';
+    applyTheme(currentTheme);
+
+    // Listen for system theme changes when in system mode
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (localStorage.getItem('theme') === 'system') {
+            htmlElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        }
+    });
+
+    // Cycle through themes: system -> light -> dark -> system
+    themeToggleBtn.addEventListener('click', function() {
+        const currentTheme = localStorage.getItem('theme') || 'system';
+        let nextTheme;
+
+        if (currentTheme === 'system') {
+            nextTheme = 'light';
+        } else if (currentTheme === 'light') {
+            nextTheme = 'dark';
+        } else {
+            nextTheme = 'system';
+        }
+
+        localStorage.setItem('theme', nextTheme);
+        applyTheme(nextTheme);
+    });
+</script>
+</body>
+
+</html>

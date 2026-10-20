@@ -1,0 +1,23 @@
+{% extends 'page.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+
+    <h1 id="mes-articles">Mes articles</h1>
+    {{ _self.post_list(posts) }}
+
+    {% if drafts is not empty %}
+    <h1 id="brouillons-local-uniquement">Brouillons (local uniquement)</h1>
+    {{ _self.post_list(drafts, ' 🚧') }}
+    {% endif %}
+{% endblock %}
+
+{% macro post_list(posts, suffix = '') %}
+    <article>
+        {% for post in posts %}
+        <p><em>{{ post.date|date_fr }} · {{ post.html|reading_time }}:</em>
+        <br>
+        <a href="{{ path('post', post.routeParameters) }}">{{ post.title }}</a>{{ suffix }}</p>
+        {% endfor %}
+    </article>
+{% endmacro %}

@@ -1,0 +1,3 @@
+bakslash_static_site:
+    storage: '%kernel.project_dir%/build'
+    base_uri: 'https://florent.cc'
