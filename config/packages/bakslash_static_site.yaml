@@ -1,3 +1,7 @@
 bakslash_static_site:
     storage: '%kernel.project_dir%/build'
     base_uri: 'https://florent.cc'
+
+when@test:
+    bakslash_static_site:
+        storage: '%kernel.cache_dir%/static-site'

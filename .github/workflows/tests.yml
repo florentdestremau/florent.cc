@@ -1,0 +1,20 @@
+name: Tests
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl
+      - run: composer install --no-interaction --no-progress
+      - run: bin/console lint:twig templates
+      - run: bin/console lint:container
+      - run: composer test
